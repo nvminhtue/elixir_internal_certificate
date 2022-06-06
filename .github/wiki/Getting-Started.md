@@ -1,8 +1,8 @@
 ## Erlang & Elixir
 
-- Erlang 24.2.2
+- Erlang 25.0
 
-- Elixir 1.13.3
+- Elixir 1.13.4
 
 ### Node
 
