@@ -6,6 +6,7 @@ on:
       - Test
     branches:
       - develop
+      - main
     types:
       - completed
   workflow_dispatch:
@@ -13,7 +14,6 @@ on:
 env:
   # To API Key is used by Heroku CLI to authenticate
   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-  HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
 
 jobs:
   deploy:
@@ -29,11 +29,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Read the upcoming release tag for recognizing stg/prd deployment
+      - name: Set env BRANCH_TAG
+        uses: nimblehq/branch-tag-action@v1.2
+        with:
+          ref: ${{ github.event.workflow_run.head_branch || github.ref }}
+
+      # Define the upcoming stg/prd deployment app name
+      - name: Set env for HEROKU deployment
+        run: |
+          if [[ $BRANCH_TAG = "latest" ]]
+          then
+            echo "HEROKU_APP_NAME=${{ secrets.HEROKU_APP_NAME }}" >> $GITHUB_ENV
+          else
+            echo "HEROKU_APP_NAME=${{ secrets.HEROKU_STG_APP_NAME }}" >> $GITHUB_ENV
+          fi
+
       - name: Login to Heroku Container registry
         run: heroku container:login
 
       - name: Build and push
-        run: heroku container:push -a ${{ env.HEROKU_APP_NAME }} web
+        run: heroku container:push -a $HEROKU_APP_NAME web
 
       - name: Release
-        run: heroku container:release -a ${{ env.HEROKU_APP_NAME }} web
+        run: heroku container:release -a $HEROKU_APP_NAME web

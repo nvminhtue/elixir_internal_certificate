@@ -35,3 +35,5 @@ elixir_internal_certificate-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Ignore .DS_Store file
+.DS_Store
