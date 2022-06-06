@@ -22,7 +22,7 @@ config :elixir_internal_certificate, ElixirInternalCertificateWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "H/82QlzWsrfqfhm+d8fjgv5pxprYmtBgqho3Lpx+PuK3duxCgl5KxvO5JLm0zspr",
+  secret_key_base: "q9Yh2N0Y//d0+r83EgBvyMl213dt5TcaJpctnRW+qXK/11P1RfgVevik0IyMTYkL",
   watchers: [
     app_sass: {
       DartSass,
