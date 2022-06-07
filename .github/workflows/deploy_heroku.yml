@@ -7,7 +7,7 @@ on:
     branches:
       - develop
       - main
-      - chore/setup-ci-cd
+      - chore-test-cd
     types:
       - completed
   workflow_dispatch:
