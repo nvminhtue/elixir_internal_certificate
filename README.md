@@ -4,6 +4,9 @@
 
 This application's main function is to allow the user to import CSV file with keywords contained for Google searching and crawling.
 
+- Production site: https://elixir-internal-certificate.herokuapp.com
+- Staging site: https://stg-elixir-int-cert.herokuapp.com
+
 ## Project Setup
 
 ### Erlang & Elixir
