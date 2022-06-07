@@ -161,7 +161,13 @@
            order:
              ~w/shortdoc moduledoc behaviour use import alias require module_attribute defstruct callback/a
          ]},
-        {Credo.Check.Consistency.MultiAliasImportRequireUse, []},
+        {Credo.Check.Consistency.MultiAliasImportRequireUse,
+         files: %{
+           excluded: [
+             "lib/elixir_internal_certificate/accounts.ex",
+             "test/elixir_internal_certificate/accounts_test.exs"
+           ]
+         }},
         {Credo.Check.Consistency.UnusedVariableNames, false},
         {Credo.Check.Design.DuplicatedCode, files: %{excluded: ["**/*_test.exs"]}},
         {Credo.Check.Readability.AliasAs, false},

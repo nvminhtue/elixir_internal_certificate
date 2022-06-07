@@ -1,16 +1,20 @@
 defmodule ElixirInternalCertificateWeb.UserAuthTest do
   use ElixirInternalCertificateWeb.ConnCase, async: true
 
+  import ElixirInternalCertificate.AccountsFixtures
+
   alias ElixirInternalCertificate.Accounts
   alias ElixirInternalCertificateWeb.UserAuth
-  import ElixirInternalCertificate.AccountsFixtures
 
   @remember_me_cookie "_elixir_internal_certificate_web_user_remember_me"
 
   setup %{conn: conn} do
     conn =
       conn
-      |> Map.replace!(:secret_key_base, ElixirInternalCertificateWeb.Endpoint.config(:secret_key_base))
+      |> Map.replace!(
+        :secret_key_base,
+        ElixirInternalCertificateWeb.Endpoint.config(:secret_key_base)
+      )
       |> init_test_session(%{})
 
     %{user: user_fixture(), conn: conn}
@@ -20,7 +24,6 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
     test "stores the user token in the session", %{conn: conn, user: user} do
       conn = UserAuth.log_in_user(conn, user)
       assert token = get_session(conn, :user_token)
-      assert get_session(conn, :live_socket_id) == "users_sessions:#{Base.url_encode64(token)}"
       assert redirected_to(conn) == "/"
       assert Accounts.get_user_by_session_token(token)
     end
@@ -61,17 +64,6 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
       assert %{max_age: 0} = conn.resp_cookies[@remember_me_cookie]
       assert redirected_to(conn) == "/"
       refute Accounts.get_user_by_session_token(user_token)
-    end
-
-    test "broadcasts to the given live_socket_id", %{conn: conn} do
-      live_socket_id = "users_sessions:abcdef-token"
-      ElixirInternalCertificateWeb.Endpoint.subscribe(live_socket_id)
-
-      conn
-      |> put_session(:live_socket_id, live_socket_id)
-      |> UserAuth.log_out_user()
-
-      assert_receive %Phoenix.Socket.Broadcast{event: "disconnect", topic: ^live_socket_id}
     end
 
     test "works even if user is already logged out", %{conn: conn} do
@@ -144,21 +136,21 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
       assert halted_conn.halted
       assert get_session(halted_conn, :user_return_to) == "/foo"
 
-      halted_conn =
+      halted_conn_baz =
         %{conn | path_info: ["foo"], query_string: "bar=baz"}
         |> fetch_flash()
         |> UserAuth.require_authenticated_user([])
 
-      assert halted_conn.halted
-      assert get_session(halted_conn, :user_return_to) == "/foo?bar=baz"
+      assert halted_conn_baz.halted
+      assert get_session(halted_conn_baz, :user_return_to) == "/foo?bar=baz"
 
-      halted_conn =
+      halted_conn_bar =
         %{conn | path_info: ["foo"], query_string: "bar", method: "POST"}
         |> fetch_flash()
         |> UserAuth.require_authenticated_user([])
 
-      assert halted_conn.halted
-      refute get_session(halted_conn, :user_return_to)
+      assert halted_conn_bar.halted
+      refute get_session(halted_conn_bar, :user_return_to)
     end
 
     test "does not redirect if user is authenticated", %{conn: conn, user: user} do

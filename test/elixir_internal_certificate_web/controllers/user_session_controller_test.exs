@@ -13,7 +13,6 @@ defmodule ElixirInternalCertificateWeb.UserSessionControllerTest do
       response = html_response(conn, 200)
       assert response =~ "<h1>Log in</h1>"
       assert response =~ "Register</a>"
-      assert response =~ "Forgot your password?</a>"
     end
 
     test "redirects if already logged in", %{conn: conn, user: user} do
@@ -33,10 +32,9 @@ defmodule ElixirInternalCertificateWeb.UserSessionControllerTest do
       assert redirected_to(conn) == "/"
 
       # Now do a logged in request and assert on the menu
-      conn = get(conn, "/")
-      response = html_response(conn, 200)
+      logged_conn = get(conn, "/")
+      response = html_response(logged_conn, 200)
       assert response =~ user.email
-      assert response =~ "Settings</a>"
       assert response =~ "Log out</a>"
     end
 
