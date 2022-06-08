@@ -17,7 +17,7 @@ config :elixir_internal_certificate, ElixirInternalCertificate.Repo,
 # you can enable the server option below.
 config :elixir_internal_certificate, ElixirInternalCertificateWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "6vdSScA0MpEezXvPC+CzGudisF8e2mWV+AZCPFwSdzW51k9aQOCzjEubtTd98NGM",
+  secret_key_base: "0zON+zcWlayLkHlyowPOXSGt2GjFDXeKS9P7FSkSbbxUMDtBCi5xID7zrgVy/tob",
   server: true
 
 config :elixir_internal_certificate, :sql_sandbox, true
