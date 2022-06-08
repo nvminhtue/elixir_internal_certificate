@@ -21,16 +21,13 @@ defmodule ElixirInternalCertificate.DataCase do
   using do
     quote do
       use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
-
       use Mimic
 
-      alias ElixirInternalCertificate.Repo
-
       import Ecto
-      import Ecto.Changeset
-      import Ecto.Query
-      import ElixirInternalCertificate.DataCase
-      import ElixirInternalCertificate.Factory
+      import Ecto.{Changeset, Query}
+      import ElixirInternalCertificate.{DataCase, Factory}
+
+      alias ElixirInternalCertificate.Repo
     end
   end
 

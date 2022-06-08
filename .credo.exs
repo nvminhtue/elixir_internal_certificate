@@ -165,7 +165,9 @@
          files: %{
            excluded: [
              "lib/elixir_internal_certificate/accounts.ex",
-             "test/elixir_internal_certificate/accounts_test.exs"
+             "test/elixir_internal_certificate/accounts_test.exs",
+             "test/support/data_case.ex",
+             "test/support/factory.ex"
            ]
          }},
         {Credo.Check.Consistency.UnusedVariableNames, false},

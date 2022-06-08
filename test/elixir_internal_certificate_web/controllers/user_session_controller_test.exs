@@ -1,10 +1,8 @@
 defmodule ElixirInternalCertificateWeb.UserSessionControllerTest do
   use ElixirInternalCertificateWeb.ConnCase, async: true
 
-  import ElixirInternalCertificate.AccountsFixtures
-
   setup do
-    %{user: user_fixture()}
+    %{user: insert(:user)}
   end
 
   describe "GET /users/log_in" do

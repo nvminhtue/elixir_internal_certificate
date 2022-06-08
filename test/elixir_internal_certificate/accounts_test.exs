@@ -1,18 +1,20 @@
 defmodule ElixirInternalCertificate.AccountsTest do
   use ElixirInternalCertificate.DataCase
 
-  import ElixirInternalCertificate.AccountsFixtures
-
   alias ElixirInternalCertificate.Accounts
   alias ElixirInternalCertificate.Accounts.{User, UserToken}
+
+  setup do
+    %{user: insert(:user)}
+  end
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
       refute Accounts.get_user_by_email("unknown@example.com")
     end
 
-    test "returns the user if the email exists" do
-      %{id: id} = user = user_fixture()
+    test "returns the user if the email exists", %{user: user} do
+      %{id: id} = user
       assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
     end
   end
@@ -22,13 +24,12 @@ defmodule ElixirInternalCertificate.AccountsTest do
       refute Accounts.get_user_by_email_and_password("unknown@example.com", "hello world!")
     end
 
-    test "does not return the user if the password is not valid" do
-      user = user_fixture()
+    test "does not return the user if the password is not valid", %{user: user} do
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
 
-    test "returns the user if the email and password are valid" do
-      %{id: id} = user = user_fixture()
+    test "returns the user if the email and password are valid", %{user: user} do
+      %{id: id} = user
 
       assert %User{id: ^id} =
                Accounts.get_user_by_email_and_password(user.email, valid_user_password())
@@ -42,8 +43,8 @@ defmodule ElixirInternalCertificate.AccountsTest do
       end
     end
 
-    test "returns the user with the given id" do
-      %{id: id} = user = user_fixture()
+    test "returns the user with the given id", %{user: user} do
+      %{id: id} = user
       assert %User{id: ^id} = Accounts.get_user!(user.id)
     end
   end
@@ -74,8 +75,8 @@ defmodule ElixirInternalCertificate.AccountsTest do
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
-    test "validates email uniqueness" do
-      %{email: email} = user_fixture()
+    test "validates email uniqueness", %{user: user} do
+      %{email: email} = user
       {:error, changeset} = Accounts.register_user(%{email: email})
       assert "has already been taken" in errors_on(changeset).email
 
@@ -117,12 +118,9 @@ defmodule ElixirInternalCertificate.AccountsTest do
   end
 
   describe "generate_user_session_token/1" do
-    setup do
-      %{user: user_fixture()}
-    end
-
     test "generates a token", %{user: user} do
-      token = Accounts.generate_user_session_token(user)
+      # token = Accounts.generate_user_session_token(user)
+      %{token: token} = _user_token_record = insert(:user_token)
       assert user_token = Repo.get_by(UserToken, token: token)
       assert user_token.context == "session"
 
@@ -130,7 +128,7 @@ defmodule ElixirInternalCertificate.AccountsTest do
       assert_raise Ecto.ConstraintError, fn ->
         Repo.insert!(%UserToken{
           token: user_token.token,
-          user_id: user_fixture().id,
+          user_id: user.id,
           context: "session"
         })
       end
@@ -139,29 +137,27 @@ defmodule ElixirInternalCertificate.AccountsTest do
 
   describe "get_user_by_session_token/1" do
     setup do
-      user = user_fixture()
-      token = Accounts.generate_user_session_token(user)
-      %{user: user, token: token}
+      user_token = insert(:user_token)
+      %{user_token: user_token}
     end
 
-    test "returns user by token", %{user: user, token: token} do
-      assert session_user = Accounts.get_user_by_session_token(token)
-      assert session_user.id == user.id
+    test "returns user by token", %{user_token: user_token} do
+      assert session_user = Accounts.get_user_by_session_token(user_token.token)
+      assert session_user.id == user_token.user.id
     end
 
     test "does not return user for invalid token" do
       refute Accounts.get_user_by_session_token("oops")
     end
 
-    test "does not return user for expired token", %{token: token} do
+    test "does not return user for expired token", %{user_token: user_token} do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      refute Accounts.get_user_by_session_token(token)
+      refute Accounts.get_user_by_session_token(user_token.token)
     end
   end
 
   describe "delete_session_token/1" do
-    test "deletes the token" do
-      user = user_fixture()
+    test "deletes the token", %{user: user} do
       token = Accounts.generate_user_session_token(user)
       assert Accounts.delete_session_token(token) == :ok
       refute Accounts.get_user_by_session_token(token)

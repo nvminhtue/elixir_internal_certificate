@@ -3,4 +3,6 @@ defmodule ElixirInternalCertificate.Factory do
 
   # Define your factories in /test/factories and declare it here,
   # eg: `use ElixirInternalCertificate.Accounts.UserFactory`
+
+  use ElixirInternalCertificate.{UserFactory, UserTokenFactory}
 end
