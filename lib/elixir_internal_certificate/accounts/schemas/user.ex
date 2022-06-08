@@ -3,6 +3,14 @@ defmodule ElixirInternalCertificate.Accounts.User do
 
   import Ecto.Changeset
 
+  @email_regex ~r/^[^\s]+@[^\s]+$/
+  @email_max_length 160
+
+  @password_min_length 6
+  @password_max_length 72
+
+  @min_pole_of_byte 0
+
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true
@@ -45,7 +53,7 @@ defmodule ElixirInternalCertificate.Accounts.User do
         %ElixirInternalCertificate.Accounts.User{hashed_password: hashed_password},
         password
       )
-      when is_binary(hashed_password) and byte_size(password) > 0 do
+      when is_binary(hashed_password) and byte_size(password) > @min_pole_of_byte do
     Bcrypt.verify_pass(password, hashed_password)
   end
 
@@ -57,8 +65,8 @@ defmodule ElixirInternalCertificate.Accounts.User do
   defp validate_email(changeset) do
     changeset
     |> validate_required([:email])
-    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
-    |> validate_length(:email, max: 160)
+    |> validate_format(:email, @email_regex, message: "must have the @ sign and no spaces")
+    |> validate_length(:email, max: @email_max_length)
     |> unsafe_validate_unique(:email, ElixirInternalCertificate.Repo)
     |> unique_constraint(:email)
   end
@@ -66,7 +74,7 @@ defmodule ElixirInternalCertificate.Accounts.User do
   defp validate_password(changeset, opts) do
     changeset
     |> validate_required([:password])
-    |> validate_length(:password, min: 6, max: 72)
+    |> validate_length(:password, min: @password_min_length, max: @password_max_length)
     |> maybe_hash_password(opts)
   end
 
@@ -77,7 +85,7 @@ defmodule ElixirInternalCertificate.Accounts.User do
     if hash_password? && password && changeset.valid? do
       changeset
       # If using Bcrypt, then further validate it is at most 72 bytes long
-      |> validate_length(:password, max: 72, count: :bytes)
+      |> validate_length(:password, max: @password_max_length, count: :bytes)
       |> put_change(:hashed_password, Bcrypt.hash_pwd_salt(password))
       |> delete_change(:password)
     else

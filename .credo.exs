@@ -164,7 +164,7 @@
         {Credo.Check.Consistency.MultiAliasImportRequireUse,
          files: %{
            excluded: [
-             "lib/elixir_internal_certificate/accounts.ex",
+             "lib/elixir_internal_certificate/accounts/accounts.ex",
              "test/elixir_internal_certificate/accounts_test.exs",
              "test/support/data_case.ex",
              "test/support/factory.ex"
