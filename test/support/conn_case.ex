@@ -18,6 +18,7 @@ defmodule ElixirInternalCertificateWeb.ConnCase do
   use ExUnit.CaseTemplate
 
   alias Ecto.Adapters.SQL.Sandbox
+  alias ElixirInternalCertificate.Account.Accounts
 
   using do
     quote do
@@ -31,6 +32,7 @@ defmodule ElixirInternalCertificateWeb.ConnCase do
       import ElixirInternalCertificateWeb.ConnCase
       import ElixirInternalCertificate.Factory
 
+      alias ElixirInternalCertificate.Account.Accounts
       alias ElixirInternalCertificateWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
@@ -50,7 +52,7 @@ defmodule ElixirInternalCertificateWeb.ConnCase do
   It returns an updated `conn`.
   """
   def log_in_user(conn, user) do
-    token = ElixirInternalCertificate.Accounts.generate_user_session_token(user)
+    token = Accounts.generate_user_session_token(user)
 
     conn
     |> Phoenix.ConnTest.init_test_session(%{})

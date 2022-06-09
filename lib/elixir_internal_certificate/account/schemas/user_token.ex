@@ -1,20 +1,18 @@
-defmodule ElixirInternalCertificate.Accounts.UserToken do
+defmodule ElixirInternalCertificate.Account.Schemas.UserToken do
   use Ecto.Schema
 
-  import Ecto.Query
-
-  alias ElixirInternalCertificate.Accounts.UserToken
+  alias ElixirInternalCertificate.Account.Queries.UserTokenQuery
+  alias ElixirInternalCertificate.Account.Schemas.UserToken
 
   @rand_size 32
 
   # It is very important to keep the reset password token expiry short,
   # since someone with access to the email may take over the account.
-  @session_validity_in_days 60
 
   schema "users_tokens" do
     field :token, :binary
     field :context, :string
-    belongs_to :user, ElixirInternalCertificate.Accounts.User
+    belongs_to :user, ElixirInternalCertificate.Account.Schemas.User
 
     timestamps(updated_at: false)
   end
@@ -52,19 +50,8 @@ defmodule ElixirInternalCertificate.Accounts.UserToken do
   not expired (after @session_validity_in_days).
   """
   def verify_session_token_query(token) do
-    query =
-      from token in token_and_context_query(token, "session"),
-        join: user in assoc(token, :user),
-        where: token.inserted_at > ago(@session_validity_in_days, "day"),
-        select: user
+    query = UserTokenQuery.session_token_query(token)
 
     {:ok, query}
-  end
-
-  @doc """
-  Returns the token struct for the given token value and context.
-  """
-  def token_and_context_query(token, context) do
-    from UserToken, where: [token: ^token, context: ^context]
   end
 end

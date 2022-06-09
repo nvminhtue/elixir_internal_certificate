@@ -1,9 +1,6 @@
 defmodule ElixirInternalCertificateWeb.UserAuthTest do
   use ElixirInternalCertificateWeb.ConnCase, async: true
 
-  import ElixirInternalCertificate.AccountsFixtures
-
-  alias ElixirInternalCertificate.Accounts
   alias ElixirInternalCertificateWeb.UserAuth
 
   @remember_me_cookie "_elixir_internal_certificate_web_user_remember_me"
@@ -17,31 +14,50 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
       )
       |> init_test_session(%{})
 
-    %{user: user_fixture(), conn: conn}
+    %{conn: conn}
   end
 
   describe "log_in_user/3" do
-    test "stores the user token in the session", %{conn: conn, user: user} do
+    setup do
+      %{user: insert(:user)}
+    end
+
+    test "when log_in_user calls success, stores the user token in the session", %{
+      conn: conn,
+      user: user
+    } do
       conn = UserAuth.log_in_user(conn, user)
+
       assert token = get_session(conn, :user_token)
       assert redirected_to(conn) == "/"
       assert Accounts.get_user_by_session_token(token)
     end
 
-    test "clears everything previously stored in the session", %{conn: conn, user: user} do
+    test "when log_in_user calls success, clears everything previously stored in the session", %{
+      conn: conn,
+      user: user
+    } do
       conn = conn |> put_session(:to_be_removed, "value") |> UserAuth.log_in_user(user)
-      refute get_session(conn, :to_be_removed)
+
+      assert get_session(conn, :to_be_removed) == nil
     end
 
-    test "redirects to the configured path", %{conn: conn, user: user} do
+    test "when log_in_user calls success, redirects to the configured path", %{
+      conn: conn,
+      user: user
+    } do
       conn = conn |> put_session(:user_return_to, "/hello") |> UserAuth.log_in_user(user)
+
       assert redirected_to(conn) == "/hello"
     end
 
-    test "writes a cookie if remember_me is configured", %{conn: conn, user: user} do
+    test "when log_in_user calls success, writes a cookie if remember_me is configured", %{
+      conn: conn,
+      user: user
+    } do
       conn = conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
-      assert get_session(conn, :user_token) == conn.cookies[@remember_me_cookie]
 
+      assert get_session(conn, :user_token) == conn.cookies[@remember_me_cookie]
       assert %{value: signed_token, max_age: max_age} = conn.resp_cookies[@remember_me_cookie]
       assert signed_token != get_session(conn, :user_token)
       assert max_age == 5_184_000
@@ -49,7 +65,11 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
   end
 
   describe "logout_user/1" do
-    test "erases session and cookies", %{conn: conn, user: user} do
+    setup do
+      %{user: insert(:user)}
+    end
+
+    test "when logout_user calls success, erases session and cookies", %{conn: conn, user: user} do
       user_token = Accounts.generate_user_session_token(user)
 
       conn =
@@ -59,29 +79,38 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
         |> fetch_cookies()
         |> UserAuth.log_out_user()
 
-      refute get_session(conn, :user_token)
-      refute conn.cookies[@remember_me_cookie]
+      assert get_session(conn, :user_token) == nil
+      assert conn.cookies[@remember_me_cookie] == nil
       assert %{max_age: 0} = conn.resp_cookies[@remember_me_cookie]
       assert redirected_to(conn) == "/"
-      refute Accounts.get_user_by_session_token(user_token)
+      assert Accounts.get_user_by_session_token(user_token) == nil
     end
 
-    test "works even if user is already logged out", %{conn: conn} do
+    test "when logout_user calls success, works even if user is already logged out", %{conn: conn} do
       conn = conn |> fetch_cookies() |> UserAuth.log_out_user()
-      refute get_session(conn, :user_token)
+
+      assert get_session(conn, :user_token) == nil
       assert %{max_age: 0} = conn.resp_cookies[@remember_me_cookie]
       assert redirected_to(conn) == "/"
     end
   end
 
   describe "fetch_current_user/2" do
-    test "authenticates user from session", %{conn: conn, user: user} do
+    setup do
+      %{user: insert(:user)}
+    end
+
+    test "when fetch_current_user/2 calls success, authenticates user from session will be fetch",
+         %{conn: conn, user: user} do
       user_token = Accounts.generate_user_session_token(user)
+
       conn = conn |> put_session(:user_token, user_token) |> UserAuth.fetch_current_user([])
+
       assert conn.assigns.current_user.id == user.id
     end
 
-    test "authenticates user from cookies", %{conn: conn, user: user} do
+    test "when fetch_current_user/2 calls success, authenticates user from cookies will be fetched",
+         %{conn: conn, user: user} do
       logged_in_conn =
         conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
 
@@ -97,37 +126,52 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
       assert conn.assigns.current_user.id == user.id
     end
 
-    test "does not authenticate if data is missing", %{conn: conn, user: user} do
+    test "when data is missing, does not authenticate", %{conn: conn, user: user} do
       _ = Accounts.generate_user_session_token(user)
+
       conn = UserAuth.fetch_current_user(conn, [])
-      refute get_session(conn, :user_token)
-      refute conn.assigns.current_user
+
+      assert get_session(conn, :user_token) == nil
+      assert conn.assigns.current_user == nil
     end
   end
 
   describe "redirect_if_user_is_authenticated/2" do
-    test "redirects if user is authenticated", %{conn: conn, user: user} do
+    setup do
+      %{user: insert(:user)}
+    end
+
+    test "when user is authenticated, redirects to default page", %{conn: conn, user: user} do
       conn = conn |> assign(:current_user, user) |> UserAuth.redirect_if_user_is_authenticated([])
+
       assert conn.halted
       assert redirected_to(conn) == "/"
     end
 
-    test "does not redirect if user is not authenticated", %{conn: conn} do
+    test "when user is not authenticated, does not redirect", %{conn: conn} do
       conn = UserAuth.redirect_if_user_is_authenticated(conn, [])
-      refute conn.halted
-      refute conn.status
+
+      assert conn.halted == false
+      assert conn.status == nil
     end
   end
 
   describe "require_authenticated_user/2" do
-    test "redirects if user is not authenticated", %{conn: conn} do
+    setup do
+      %{user: insert(:user)}
+    end
+
+    test "when user is not authenticated, redirects to login page", %{conn: conn} do
       conn = conn |> fetch_flash() |> UserAuth.require_authenticated_user([])
+
       assert conn.halted
       assert redirected_to(conn) == Routes.user_session_path(conn, :new)
       assert get_flash(conn, :error) == "You must log in to access this page."
     end
 
-    test "stores the path to redirect to on GET", %{conn: conn} do
+    test "when user is authenticated from previous path, stores the path to redirect to on GET", %{
+      conn: conn
+    } do
       halted_conn =
         %{conn | path_info: ["foo"], query_string: ""}
         |> fetch_flash()
@@ -150,13 +194,14 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
         |> UserAuth.require_authenticated_user([])
 
       assert halted_conn_bar.halted
-      refute get_session(halted_conn_bar, :user_return_to)
+      assert get_session(halted_conn_bar, :user_return_to) == nil
     end
 
-    test "does not redirect if user is authenticated", %{conn: conn, user: user} do
+    test "when user is not authenticated, does not redirect", %{conn: conn, user: user} do
       conn = conn |> assign(:current_user, user) |> UserAuth.require_authenticated_user([])
-      refute conn.halted
-      refute conn.status
+
+      assert conn.halted == false
+      assert conn.status == nil
     end
   end
 end

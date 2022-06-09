@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertificate.Accounts.User do
+defmodule ElixirInternalCertificate.Account.Schemas.User do
   use Ecto.Schema
 
   import Ecto.Changeset
@@ -50,7 +50,7 @@ defmodule ElixirInternalCertificate.Accounts.User do
   `Bcrypt.no_user_verify/0` to avoid timing attacks.
   """
   def valid_password?(
-        %ElixirInternalCertificate.Accounts.User{hashed_password: hashed_password},
+        %__MODULE__{hashed_password: hashed_password},
         password
       )
       when is_binary(hashed_password) and byte_size(password) > @min_pole_of_byte do

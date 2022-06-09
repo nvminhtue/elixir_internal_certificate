@@ -5,7 +5,7 @@ defmodule ElixirInternalCertificate.UserFactory do
   """
   use ExMachina.Ecto, repo: ElixirInternalCertificate.Repo
 
-  alias ElixirInternalCertificate.Accounts.User
+  alias ElixirInternalCertificate.Account.Schemas.User
 
   defmacro __using__(_opts) do
     quote do

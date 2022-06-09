@@ -1,11 +1,12 @@
-defmodule ElixirInternalCertificate.Accounts do
+defmodule ElixirInternalCertificate.Account.Accounts do
   @moduledoc """
   The Accounts context.
   """
 
   import Ecto.Query, warn: false
 
-  alias ElixirInternalCertificate.Accounts.{User, UserToken}
+  alias ElixirInternalCertificate.Account.Queries.UserTokenQuery
+  alias ElixirInternalCertificate.Account.Schemas.{User, UserToken}
   alias ElixirInternalCertificate.Repo
 
   ## Database getters
@@ -22,9 +23,7 @@ defmodule ElixirInternalCertificate.Accounts do
       nil
 
   """
-  def get_user_by_email(email) when is_binary(email) do
-    Repo.get_by(User, email: email)
-  end
+  def get_user_by_email(email) when is_binary(email), do: Repo.get_by(User, email: email)
 
   @doc """
   Gets a user by email and password.
@@ -89,9 +88,8 @@ defmodule ElixirInternalCertificate.Accounts do
       %Ecto.Changeset{data: %User{}}
 
   """
-  def change_user_registration(%User{} = user, attrs \\ %{}) do
-    User.registration_changeset(user, attrs, hash_password: false)
-  end
+  def change_user_registration(%User{} = user, attrs \\ %{}),
+    do: User.registration_changeset(user, attrs, hash_password: false)
 
   ## Session
 
@@ -116,7 +114,7 @@ defmodule ElixirInternalCertificate.Accounts do
   Deletes the signed token with the given context.
   """
   def delete_session_token(token) do
-    Repo.delete_all(UserToken.token_and_context_query(token, "session"))
+    Repo.delete_all(UserTokenQuery.token_and_context_query(token, "session"))
     :ok
   end
 end

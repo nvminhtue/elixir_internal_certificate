@@ -9,7 +9,6 @@ Mimic.copy(Ecto.Adapters.SQL)
 {:ok, _} = Application.ensure_all_started(:wallaby)
 
 ExUnit.start(capture_log: true)
-Faker.start()
 Ecto.Adapters.SQL.Sandbox.mode(ElixirInternalCertificate.Repo, :manual)
 
 Application.put_env(:wallaby, :base_url, ElixirInternalCertificateWeb.Endpoint.url())

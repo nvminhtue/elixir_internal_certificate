@@ -6,7 +6,7 @@ defmodule ElixirInternalCertificateWeb.IconHelperTest do
   alias ElixirInternalCertificateWeb.IconHelper
 
   describe "icon_tag/3" do
-    test "renders a svg icon" do
+    test "when svg icon is available, it should render" do
       first_svg_icon =
         ElixirInternalCertificateWeb.Endpoint
         |> IconHelper.icon_tag("active", class: "customize-icon-class")

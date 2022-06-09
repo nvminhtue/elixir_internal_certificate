@@ -2,7 +2,7 @@ defmodule ElixirInternalCertificateWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
-  alias ElixirInternalCertificate.Accounts
+  alias ElixirInternalCertificate.Account.Accounts
   alias ElixirInternalCertificateWeb.Router.Helpers, as: Routes
 
   # Make the remember me cookie valid for 60 days.
@@ -130,9 +130,8 @@ defmodule ElixirInternalCertificateWeb.UserAuth do
     end
   end
 
-  defp maybe_store_return_to(%{method: "GET"} = conn) do
-    put_session(conn, :user_return_to, current_path(conn))
-  end
+  defp maybe_store_return_to(%{method: "GET"} = conn),
+    do: put_session(conn, :user_return_to, current_path(conn))
 
   defp maybe_store_return_to(conn), do: conn
 
