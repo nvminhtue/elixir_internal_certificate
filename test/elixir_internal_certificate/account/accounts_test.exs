@@ -1,5 +1,5 @@
 defmodule ElixirInternalCertificate.Account.AccountsTest do
-  use ElixirInternalCertificate.DataCase
+  use ElixirInternalCertificate.DataCase, async: true
 
   alias ElixirInternalCertificate.Account.Accounts
   alias ElixirInternalCertificate.Account.Schemas.{User, UserToken}
@@ -27,7 +27,7 @@ defmodule ElixirInternalCertificate.Account.AccountsTest do
       assert Accounts.get_user_by_email_and_password("unknown@example.com", "hello world!") == nil
     end
 
-    test "when the password is not valid, does not return the user" do
+    test "when the password is not valid, return nil" do
       user = insert(:user)
       assert Accounts.get_user_by_email_and_password(user.email, "invalid") == nil
     end
@@ -149,11 +149,11 @@ defmodule ElixirInternalCertificate.Account.AccountsTest do
       assert session_user.id == user_token.user.id
     end
 
-    test "when using invalid token, does not return user" do
+    test "when using invalid token, returns nil" do
       assert Accounts.get_user_by_session_token("oops") == nil
     end
 
-    test "when using expired token, does not return user" do
+    test "when using expired token, returns nil" do
       user_token = insert(:user_token)
 
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
