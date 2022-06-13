@@ -102,19 +102,16 @@ defmodule ElixirInternalCertificateWeb.UserAuth do
     end
   end
 
-  defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}) do
-    put_resp_cookie(conn, @remember_me_cookie, token, @remember_me_options)
-  end
+  defp maybe_write_remember_me_cookie(conn, token, %{"remember_me" => "true"}),
+    do: put_resp_cookie(conn, @remember_me_cookie, token, @remember_me_options)
 
-  defp maybe_write_remember_me_cookie(conn, _token, _params) do
-    conn
-  end
+  defp maybe_write_remember_me_cookie(conn, _token, _params), do: conn
 
-  defp renew_session(conn) do
-    conn
-    |> configure_session(renew: true)
-    |> clear_session()
-  end
+  defp renew_session(conn),
+    do:
+      conn
+      |> configure_session(renew: true)
+      |> clear_session()
 
   defp ensure_user_token(conn) do
     if user_token = get_session(conn, :user_token) do

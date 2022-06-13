@@ -18,9 +18,8 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
   end
 
   describe "log_in_user/3" do
-    test "when log_in_user calls success, stores the user token in the session", %{
-      conn: conn
-    } do
+    test "when log_in_user calls success, stores the user token in the session",
+         %{conn: conn} do
       conn = UserAuth.log_in_user(conn, insert(:user))
 
       assert token = get_session(conn, :user_token)
@@ -28,25 +27,22 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
       assert Accounts.get_user_by_session_token(token)
     end
 
-    test "when log_in_user calls success, clears everything previously stored in the session", %{
-      conn: conn
-    } do
+    test "when log_in_user calls success, clears everything previously stored in the session",
+         %{conn: conn} do
       conn = conn |> put_session(:to_be_removed, "value") |> UserAuth.log_in_user(insert(:user))
 
       assert get_session(conn, :to_be_removed) == nil
     end
 
-    test "when log_in_user calls success, redirects to the configured path", %{
-      conn: conn
-    } do
+    test "when log_in_user calls success, redirects to the configured path",
+         %{conn: conn} do
       conn = conn |> put_session(:user_return_to, "/hello") |> UserAuth.log_in_user(insert(:user))
 
       assert redirected_to(conn) == "/hello"
     end
 
-    test "when log_in_user calls success, writes a cookie if remember_me is configured", %{
-      conn: conn
-    } do
+    test "when log_in_user calls success, writes a cookie if remember_me is configured",
+         %{conn: conn} do
       conn =
         conn |> fetch_cookies() |> UserAuth.log_in_user(insert(:user), %{"remember_me" => "true"})
 
@@ -152,9 +148,8 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
       assert get_flash(conn, :error) == "You must log in to access this page."
     end
 
-    test "when user is authenticated from previous path, stores the path to redirect to on GET", %{
-      conn: conn
-    } do
+    test "when user is authenticated from previous path, stores the path to redirect to on GET",
+         %{conn: conn} do
       halted_conn =
         %{conn | path_info: ["foo"], query_string: ""}
         |> fetch_flash()

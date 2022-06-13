@@ -4,9 +4,7 @@ defmodule ElixirInternalCertificateWeb.UserSessionController do
   alias ElixirInternalCertificate.Account.Accounts
   alias ElixirInternalCertificateWeb.UserAuth
 
-  def new(conn, _params) do
-    render(conn, "new.html", error_message: nil)
-  end
+  def new(conn, _params), do: render(conn, "new.html", error_message: nil)
 
   def create(conn, %{"user" => user_params}) do
     %{"email" => email, "password" => password} = user_params
@@ -20,9 +18,9 @@ defmodule ElixirInternalCertificateWeb.UserSessionController do
     end
   end
 
-  def delete(conn, _params) do
-    conn
-    |> put_flash(:info, "Logged out successfully.")
-    |> UserAuth.log_out_user()
-  end
+  def delete(conn, _params),
+    do:
+      conn
+      |> put_flash(:info, "Logged out successfully.")
+      |> UserAuth.log_out_user()
 end
