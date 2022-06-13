@@ -2,10 +2,6 @@ defmodule ElixirInternalCertificateWeb.UserSessionControllerTest do
   use ElixirInternalCertificateWeb.ConnCase, async: true
 
   describe "GET /users/log_in" do
-    setup do
-      %{user: insert(:user)}
-    end
-
     test "when redirect to login page, it should render", %{conn: conn} do
       conn = get(conn, Routes.user_session_path(conn, :new))
 
@@ -15,19 +11,17 @@ defmodule ElixirInternalCertificateWeb.UserSessionControllerTest do
       assert response =~ "Register</a>"
     end
 
-    test "with already logged in, it should redirect", %{conn: conn, user: user} do
-      conn = conn |> log_in_user(user) |> get(Routes.user_session_path(conn, :new))
+    test "with already logged in, it should redirect", %{conn: conn} do
+      conn = conn |> log_in_user(insert(:user)) |> get(Routes.user_session_path(conn, :new))
 
       assert redirected_to(conn) == "/"
     end
   end
 
   describe "POST /users/log_in" do
-    setup do
-      %{user: insert(:user)}
-    end
+    test "with valid email and password, logs the user in", %{conn: conn} do
+      user = insert(:user)
 
-    test "with valid email and password, logs the user in", %{conn: conn, user: user} do
       conn =
         post(conn, Routes.user_session_path(conn, :create), %{
           "user" => %{"email" => user.email, "password" => valid_user_password()}
@@ -45,9 +39,10 @@ defmodule ElixirInternalCertificateWeb.UserSessionControllerTest do
     end
 
     test "with valid email and password, logs the user in with remember me", %{
-      conn: conn,
-      user: user
+      conn: conn
     } do
+      user = insert(:user)
+
       conn =
         post(conn, Routes.user_session_path(conn, :create), %{
           "user" => %{
@@ -61,7 +56,9 @@ defmodule ElixirInternalCertificateWeb.UserSessionControllerTest do
       assert redirected_to(conn) == "/"
     end
 
-    test "with valid email and password, logs the user in with return to", %{conn: conn, user: user} do
+    test "with valid email and password, logs the user in with return to", %{conn: conn} do
+      user = insert(:user)
+
       conn =
         conn
         |> init_test_session(user_return_to: "/foo/bar")
@@ -75,7 +72,9 @@ defmodule ElixirInternalCertificateWeb.UserSessionControllerTest do
       assert redirected_to(conn) == "/foo/bar"
     end
 
-    test "with invalid credentials, emits error message", %{conn: conn, user: user} do
+    test "with invalid credentials, emits error message", %{conn: conn} do
+      user = insert(:user)
+
       conn =
         post(conn, Routes.user_session_path(conn, :create), %{
           "user" => %{"email" => user.email, "password" => "invalid_password"}
@@ -88,11 +87,8 @@ defmodule ElixirInternalCertificateWeb.UserSessionControllerTest do
   end
 
   describe "DELETE /users/log_out" do
-    setup do
-      %{user: insert(:user)}
-    end
-
-    test "when log the logged-in-user out, it should be successful", %{conn: conn, user: user} do
+    test "when log the logged-in-user out, it should be successful", %{conn: conn} do
+      user = insert(:user)
       conn = conn |> log_in_user(user) |> delete(Routes.user_session_path(conn, :delete))
 
       assert redirected_to(conn) == "/"

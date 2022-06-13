@@ -5,45 +5,39 @@ defmodule ElixirInternalCertificate.Account.AccountsTest do
   alias ElixirInternalCertificate.Account.Schemas.{User, UserToken}
 
   describe "get_user_by_email/1" do
-    setup do
-      %{user: insert(:user)}
+    test "with the existed email, returns the user" do
+      %{id: id} = insert(:user, email: "random_email@mail.com")
+
+      assert %User{id: ^id} = Accounts.get_user_by_email("random_email@mail.com")
     end
 
-    test "when the email does not exist, does not return the user" do
+    test "when the email does not exist, return nil" do
       assert Accounts.get_user_by_email("unknown@example.com") == nil
-    end
-
-    test "with the existed email, returns the user", %{user: user} do
-      %{id: id} = user
-
-      assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
     end
   end
 
   describe "get_user_by_email_and_password/2" do
-    setup do
-      %{user: insert(:user)}
+    test "when the email and password are valid, returns the user" do
+      %{id: id, email: email} = insert(:user)
+
+      assert %User{id: ^id} = Accounts.get_user_by_email_and_password(email, valid_user_password())
     end
 
-    test "when the email does not exist, does not return the user" do
+    test "when the email does not exist, return nil" do
       assert Accounts.get_user_by_email_and_password("unknown@example.com", "hello world!") == nil
     end
 
-    test "when the password is not valid, does not return the user", %{user: user} do
+    test "when the password is not valid, does not return the user" do
+      user = insert(:user)
       assert Accounts.get_user_by_email_and_password(user.email, "invalid") == nil
-    end
-
-    test "when the email and password are valid, returns the user", %{user: user} do
-      %{id: id} = user
-
-      assert %User{id: ^id} =
-               Accounts.get_user_by_email_and_password(user.email, valid_user_password())
     end
   end
 
   describe "get_user!/1" do
-    setup do
-      %{user: insert(:user)}
+    test "with the given id, returns the user" do
+      %{id: id} = insert(:user)
+
+      assert %User{id: ^id} = Accounts.get_user!(id)
     end
 
     test "when id is invalid, raises a no result error" do
@@ -51,17 +45,17 @@ defmodule ElixirInternalCertificate.Account.AccountsTest do
         Accounts.get_user!(-1)
       end
     end
-
-    test "with the given id, returns the user", %{user: user} do
-      %{id: id} = user
-
-      assert %User{id: ^id} = Accounts.get_user!(user.id)
-    end
   end
 
   describe "register_user/1" do
-    setup do
-      %{user: insert(:user)}
+    test "when email is unique and password is valid, email is stored, password is cleared and hashed_password is created" do
+      email = unique_user_email()
+
+      {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
+
+      assert user.email == email
+      assert is_binary(user.hashed_password)
+      assert is_nil(user.password)
     end
 
     test "when email and password are blank, requires validation error will be throw" do
@@ -91,8 +85,8 @@ defmodule ElixirInternalCertificate.Account.AccountsTest do
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
-    test "when email is already existed, requires validation error will be throw", %{user: user} do
-      %{email: email} = user
+    test "when email is already existed, requires validation error will be throw" do
+      %{email: email} = insert(:user)
 
       {:error, changeset} = Accounts.register_user(%{email: email})
 
@@ -103,23 +97,9 @@ defmodule ElixirInternalCertificate.Account.AccountsTest do
 
       assert "has already been taken" in errors_on(upcase_changeset).email
     end
-
-    test "when email is unique and password is valid, email is stored, password is cleared and hashed_password is created" do
-      email = unique_user_email()
-
-      {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
-
-      assert user.email == email
-      assert is_binary(user.hashed_password)
-      assert is_nil(user.password)
-    end
   end
 
   describe "change_user_registration/2" do
-    setup do
-      %{user: insert(:user)}
-    end
-
     test "when jump to the route of registration, returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
       assert changeset.required == [:password, :email]
@@ -162,12 +142,9 @@ defmodule ElixirInternalCertificate.Account.AccountsTest do
   end
 
   describe "get_user_by_session_token/1" do
-    setup do
+    test "when called, returns user by token" do
       user_token = insert(:user_token)
-      %{user_token: user_token}
-    end
 
-    test "when called, returns user by token", %{user_token: user_token} do
       assert session_user = Accounts.get_user_by_session_token(user_token.token)
       assert session_user.id == user_token.user.id
     end
@@ -176,7 +153,9 @@ defmodule ElixirInternalCertificate.Account.AccountsTest do
       assert Accounts.get_user_by_session_token("oops") == nil
     end
 
-    test "when using expired token, does not return user", %{user_token: user_token} do
+    test "when using expired token, does not return user" do
+      user_token = insert(:user_token)
+
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
 
       assert Accounts.get_user_by_session_token(user_token.token) == nil
@@ -184,11 +163,9 @@ defmodule ElixirInternalCertificate.Account.AccountsTest do
   end
 
   describe "delete_session_token/1" do
-    setup do
-      %{user: insert(:user)}
-    end
+    test "when being called, deletes the token" do
+      user = insert(:user)
 
-    test "when being called, deletes the token", %{user: user} do
       token = Accounts.generate_user_session_token(user)
 
       assert Accounts.delete_session_token(token) == :ok

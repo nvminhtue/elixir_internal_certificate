@@ -1,5 +1,5 @@
 ---
-name: "Feature"
+name: "Chore"
 about: "Open a chore issue to add the new minor configurations/adjustments."
 title: "Add "
 labels: "type : chore"
