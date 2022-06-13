@@ -18,6 +18,15 @@ defmodule ElixirInternalCertificateWeb.ErrorHelpers do
   end
 
   @doc """
+  Adds error class for form input errors.
+  """
+  def error_class(form, field) do
+    Enum.map(Keyword.get_values(form.errors, field), fn _error ->
+      "is-invalid"
+    end)
+  end
+
+  @doc """
   Translates an error message using gettext.
   """
   def translate_error({msg, opts}) do

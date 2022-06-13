@@ -7,7 +7,7 @@ defmodule ElixirInternalCertificateWeb.UserSessionControllerTest do
 
       response = html_response(conn, 200)
 
-      assert response =~ "<h1>Log in</h1>"
+      assert response =~ "<h1>Login</h1>"
       assert response =~ "Register</a>"
     end
 
@@ -81,7 +81,7 @@ defmodule ElixirInternalCertificateWeb.UserSessionControllerTest do
         })
 
       response = html_response(conn, 200)
-      assert response =~ "<h1>Log in</h1>"
+      assert response =~ "<h1>Login</h1>"
       assert response =~ "Invalid email or password"
     end
   end

@@ -20,23 +20,36 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
   describe "log_in_user/3" do
     test "when log_in_user calls success, stores the user token in the session",
          %{conn: conn} do
-      conn = UserAuth.log_in_user(conn, insert(:user))
+      user = insert(:user)
+      conn = conn |> fetch_flash() |> UserAuth.log_in_user(user)
 
       assert token = get_session(conn, :user_token)
       assert redirected_to(conn) == "/"
       assert Accounts.get_user_by_session_token(token)
+      assert get_flash(conn, :info) == "Welcome back #{user.email}"
     end
 
     test "when log_in_user calls success, clears everything previously stored in the session",
          %{conn: conn} do
-      conn = conn |> put_session(:to_be_removed, "value") |> UserAuth.log_in_user(insert(:user))
+      user = insert(:user)
+
+      conn =
+        conn
+        |> put_session(:to_be_removed, "value")
+        |> fetch_flash()
+        |> UserAuth.log_in_user(user)
 
       assert get_session(conn, :to_be_removed) == nil
+      assert get_flash(conn, :info) == "Welcome back #{user.email}"
     end
 
     test "when log_in_user calls success, redirects to the configured path",
          %{conn: conn} do
-      conn = conn |> put_session(:user_return_to, "/hello") |> UserAuth.log_in_user(insert(:user))
+      conn =
+        conn
+        |> put_session(:user_return_to, "/hello")
+        |> fetch_flash()
+        |> UserAuth.log_in_user(insert(:user))
 
       assert redirected_to(conn) == "/hello"
     end
@@ -44,7 +57,10 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
     test "when log_in_user calls success, writes a cookie if remember_me is configured",
          %{conn: conn} do
       conn =
-        conn |> fetch_cookies() |> UserAuth.log_in_user(insert(:user), %{"remember_me" => "true"})
+        conn
+        |> fetch_cookies()
+        |> fetch_flash()
+        |> UserAuth.log_in_user(insert(:user), %{"remember_me" => "true"})
 
       assert get_session(conn, :user_token) == conn.cookies[@remember_me_cookie]
       assert %{value: signed_token, max_age: max_age} = conn.resp_cookies[@remember_me_cookie]
@@ -96,7 +112,10 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
       user = insert(:user)
 
       logged_in_conn =
-        conn |> fetch_cookies() |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
+        conn
+        |> fetch_cookies()
+        |> fetch_flash()
+        |> UserAuth.log_in_user(user, %{"remember_me" => "true"})
 
       user_token = logged_in_conn.cookies[@remember_me_cookie]
       %{value: signed_token} = logged_in_conn.resp_cookies[@remember_me_cookie]

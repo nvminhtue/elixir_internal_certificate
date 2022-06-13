@@ -27,6 +27,7 @@ defmodule ElixirInternalCertificateWeb.UserAuth do
     |> renew_session()
     |> put_session(:user_token, token)
     |> maybe_write_remember_me_cookie(token, params)
+    |> put_flash(:info, "Welcome back #{user.email}")
     |> redirect(to: user_return_to || signed_in_path(conn))
   end
 
