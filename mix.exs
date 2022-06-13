@@ -41,6 +41,7 @@ defmodule ElixirInternalCertificate.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:bcrypt_elixir, "~> 3.0"},
       {:credo, "~> 1.6.4", [only: [:dev, :test], runtime: false]},
       {:dart_sass, "~> 0.5.0", [runtime: Mix.env() == :dev]},
       {:dialyxir, "~> 1.1.0", [only: [:dev], runtime: false]},

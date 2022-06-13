@@ -18,6 +18,7 @@ defmodule ElixirInternalCertificateWeb.ConnCase do
   use ExUnit.CaseTemplate
 
   alias Ecto.Adapters.SQL.Sandbox
+  alias ElixirInternalCertificate.Account.Accounts
 
   using do
     quote do
@@ -31,6 +32,7 @@ defmodule ElixirInternalCertificateWeb.ConnCase do
       import ElixirInternalCertificateWeb.ConnCase
       import ElixirInternalCertificate.Factory
 
+      alias ElixirInternalCertificate.Account.Accounts
       alias ElixirInternalCertificateWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
@@ -42,5 +44,18 @@ defmodule ElixirInternalCertificateWeb.ConnCase do
     pid = Sandbox.start_owner!(ElixirInternalCertificate.Repo, shared: not tags[:async])
     on_exit(fn -> Sandbox.stop_owner(pid) end)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
+  end
+
+  @doc """
+  Logs the given `user` into the `conn`.
+
+  It returns an updated `conn`.
+  """
+  def log_in_user(conn, user) do
+    token = Accounts.generate_user_session_token(user)
+
+    conn
+    |> Phoenix.ConnTest.init_test_session(%{})
+    |> Plug.Conn.put_session(:user_token, token)
   end
 end
