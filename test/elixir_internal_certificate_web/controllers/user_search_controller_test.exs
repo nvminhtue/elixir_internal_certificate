@@ -12,7 +12,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         })
         |> get("/")
 
-      assert html_response(conn, 200) =~ "Select CSV file, maximum 100 keywords contained"
+      assert html_response(conn, 200) =~ "Select CSV file, maximum 1000 keywords contained"
     end
 
     test "when unauthenticated, returns login page", %{conn: conn} do
