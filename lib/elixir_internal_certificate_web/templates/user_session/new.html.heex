@@ -1,0 +1,37 @@
+<h1>Login</h1>
+
+<div class="w-100 p-4 d-flex justify-content-center pb-4">
+  <.form let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user} class="w-50">
+    <%= if @error_message do %>
+      <div class="alert alert-danger">
+        <%= @error_message %>
+      </div>
+    <% end %>
+
+    <div class="form-outline mb-4">
+      <%= label f, :email_address, class: "form-label" %>
+        <%= email_input f, :email, class: "form-control #{error_class(f, :email)}" , required: true %>
+    </div>
+
+    <div class="form-outline mb-4">
+      <%= label f, :password, class: "form-label" %>
+        <%= password_input f, :password, class: "form-control #{error_class(f, :password)}" , required: true %>
+          <%= error_tag f, :password%>
+    </div>
+
+    <div class="form-check mb-4">
+      <%= checkbox f, :remember_me, class: "form-check-input" %>
+        <%= label f, :remember_me, "Keep me logged in for 60 days" , class: "form-check-label" %>
+    </div>
+
+    <div class="w-100 d-flex justify-content-center">
+      <%= submit "Login" , class: "btn btn-primary btn-block mb-4" %>
+    </div>
+
+    <div class="text-center">
+      <p>Not a member?
+        <%= link "Register" , to: Routes.user_registration_path(@conn, :new) %>
+      </p>
+    </div>
+  </.form>
+</div>
