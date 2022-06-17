@@ -16,6 +16,10 @@ defmodule ElixirInternalCertificate.Account.Schemas.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
 
+    has_many :user_searches,
+             ElixirInternalCertificate.Scrapper.Schemas.UserSearch,
+             foreign_key: :user_id
+
     timestamps()
   end
 

@@ -55,6 +55,7 @@ defmodule ElixirInternalCertificate.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:mimic, "~> 1.7.2", [only: :test]},
+      {:nimble_csv, "1.2.0"},
       {:nimble_template, "~> 4.2", only: :dev, runtime: false},
       {:oban, "~> 2.12.1"},
       {:phoenix, "~> 1.6.6"},

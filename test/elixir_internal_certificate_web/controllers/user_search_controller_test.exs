@@ -26,4 +26,106 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
       assert response =~ "Login"
     end
   end
+
+  describe "POST /upload" do
+    test "when uploading valid file with logged in user, returns home page", %{conn: conn} do
+      file = upload_dummy_file("valid.csv")
+
+      conn =
+        conn
+        |> log_in_user(insert(:user))
+        |> post(Routes.user_search_path(conn, :upload), %{
+          "file" => file
+        })
+        |> fetch_flash()
+
+      assert get_session(conn, :user_token)
+      assert redirected_to(conn) == "/"
+      assert get_flash(conn, :info) == "File successfully uploaded. 5 keywords uploaded."
+    end
+
+    test "when uploading empty file with logged in user, returns an error of invalid length", %{
+      conn: conn
+    } do
+      file = upload_dummy_file("empty.csv")
+
+      conn =
+        conn
+        |> log_in_user(insert(:user))
+        |> post(Routes.user_search_path(conn, :upload), %{
+          "file" => file
+        })
+        |> fetch_flash()
+
+      assert get_session(conn, :user_token)
+      assert redirected_to(conn) == "/"
+      assert get_flash(conn, :error) == "Length invalid. 1-1000 keywords within 255 characters only"
+    end
+
+    test "when uploading exceed 255 characters file with logged in user, returns an error of invalid length",
+         %{conn: conn} do
+      file = upload_dummy_file("exceed_char.csv")
+
+      conn =
+        conn
+        |> log_in_user(insert(:user))
+        |> post(Routes.user_search_path(conn, :upload), %{
+          "file" => file
+        })
+        |> fetch_flash()
+
+      assert get_session(conn, :user_token)
+      assert redirected_to(conn) == "/"
+      assert get_flash(conn, :error) == "Length invalid. 1-1000 keywords within 255 characters only"
+    end
+
+    test "when uploading exceed 1000 keywords file with logged in user, returns an error of invalid length",
+         %{conn: conn} do
+      file = upload_dummy_file("exceed_keyword.csv")
+
+      conn =
+        conn
+        |> log_in_user(insert(:user))
+        |> post(Routes.user_search_path(conn, :upload), %{
+          "file" => file
+        })
+        |> fetch_flash()
+
+      assert get_session(conn, :user_token)
+      assert redirected_to(conn) == "/"
+      assert get_flash(conn, :error) == "Length invalid. 1-1000 keywords within 255 characters only"
+    end
+
+    test "when uploading invalid extension file with logged in user, returns an error of invalid extension",
+         %{conn: conn} do
+      file = upload_dummy_file("invalid_extension.csve")
+
+      conn =
+        conn
+        |> log_in_user(insert(:user))
+        |> post(Routes.user_search_path(conn, :upload), %{
+          "file" => file
+        })
+        |> fetch_flash()
+
+      assert get_session(conn, :user_token)
+      assert redirected_to(conn) == "/"
+      assert get_flash(conn, :error) == "File extension invalid, csv only"
+    end
+
+    test "when uploading valid file but not log in, returns an error", %{conn: conn} do
+      file = upload_dummy_file("valid.csv")
+
+      conn =
+        conn
+        |> post(Routes.user_search_path(conn, :upload), %{
+          "file" => file
+        })
+        |> fetch_flash()
+
+      assert get_session(conn, :user_token) == nil
+      assert redirected_to(conn) == Routes.user_session_path(conn, :new)
+      assert get_flash(conn, :error) == "You must log in to access this page."
+    end
+  end
 end
