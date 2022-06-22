@@ -3,6 +3,8 @@ defmodule ElixirInternalCertificate.Account.Schemas.User do
 
   import Ecto.Changeset
 
+  alias ElixirInternalCertificate.Scrapper.Schemas.UserSearch
+
   @email_regex ~r/^[^\s]+@[^\s]+$/
   @email_max_length 160
 
@@ -16,9 +18,7 @@ defmodule ElixirInternalCertificate.Account.Schemas.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
 
-    has_many :user_searches,
-             ElixirInternalCertificate.Scrapper.Schemas.UserSearch,
-             foreign_key: :user_id
+    has_many :user_searches, UserSearch
 
     timestamps()
   end

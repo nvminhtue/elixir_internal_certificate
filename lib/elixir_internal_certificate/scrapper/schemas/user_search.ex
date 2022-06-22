@@ -1,6 +1,9 @@
 defmodule ElixirInternalCertificate.Scrapper.Schemas.UserSearch do
   use Ecto.Schema
 
+  alias ElixirInternalCertificate.Account.Schemas.User
+  alias ElixirInternalCertificate.Scrapper.Schemas.SearchResult
+
   schema "user_searches" do
     field :keyword, :string
 
@@ -9,13 +12,9 @@ defmodule ElixirInternalCertificate.Scrapper.Schemas.UserSearch do
           values: [:pending, :inprogress, :failed, :success],
           default: :pending
 
-    has_many :search_results,
-             ElixirInternalCertificate.Scrapper.Schemas.SearchResult,
-             foreign_key: :user_search_id
+    has_many :search_results, SearchResult
 
-    belongs_to :user,
-               ElixirInternalCertificate.Account.Schemas.User,
-               foreign_key: :user_id
+    belongs_to :user, User
 
     timestamps()
   end

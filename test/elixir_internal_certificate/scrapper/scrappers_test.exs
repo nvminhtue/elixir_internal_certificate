@@ -4,7 +4,7 @@ defmodule ElixirInternalCertificate.Scrapper.ScrappersTest do
   alias ElixirInternalCertificate.Scrapper.Scrappers
 
   describe "insert_search_keywords/1" do
-    test "with 2 valid keyword, it should store 2 records" do
+    test "with 2 valid keyword, it should create 2 records" do
       user = insert(:user)
 
       attrs = [
@@ -25,7 +25,7 @@ defmodule ElixirInternalCertificate.Scrapper.ScrappersTest do
         ExMachina.Sequence.next("alphabet_sequence", ["A", "B"])
       ]
 
-      assert Scrappers.create_search_keyword(attrs, user) == Enum.count(attrs)
+      assert Scrappers.create_search_keyword(attrs, user) == 2
     end
 
     test "with no keyword imported, it should return value of 0" do
