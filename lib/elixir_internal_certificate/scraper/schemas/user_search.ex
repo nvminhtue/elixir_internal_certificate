@@ -1,6 +1,8 @@
 defmodule ElixirInternalCertificate.Scraper.Schemas.UserSearch do
   use Ecto.Schema
 
+  import Ecto.Changeset
+
   alias ElixirInternalCertificate.Account.Schemas.User
   alias ElixirInternalCertificate.Scraper.Schemas.SearchResult
 
@@ -18,4 +20,7 @@ defmodule ElixirInternalCertificate.Scraper.Schemas.UserSearch do
 
     timestamps()
   end
+
+  def status_changeset(searching_keyword, status),
+    do: change(searching_keyword, status: status)
 end

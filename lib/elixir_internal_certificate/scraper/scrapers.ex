@@ -4,17 +4,33 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
   """
 
   alias ElixirInternalCertificate.Repo
-  alias ElixirInternalCertificate.Scraper.Schemas.UserSearch
+  alias ElixirInternalCertificate.Scrapper.Schemas.{SearchResult, UrlResult, UserSearch}
 
   def insert_search_keywords(attrs),
-    do: Repo.insert_all(UserSearch, attrs)
+    do: Repo.insert_all(UserSearch, attrs, returning: true)
 
-  def create_search_keyword(keywords, user) do
-    keywords
-    |> parsing_keywords(user)
-    |> insert_search_keywords()
-    |> elem(0)
-  end
+  def create_user_search(keywords, user),
+    do:
+      keywords
+      |> parsing_keywords(user)
+      |> insert_search_keywords()
+
+  def get_user_search(id), do: Repo.get(UserSearch, id)
+
+  def update_user_search_status(user_search, status),
+    do:
+      user_search
+      |> UserSearch.status_changeset(status)
+      |> Repo.update()
+
+  def saving_search_result(result),
+    do:
+      %SearchResult{}
+      |> SearchResult.search_result_changeset(result)
+      |> Repo.insert(returning: true)
+
+  def saving_url(result),
+    do: Repo.insert_all(UrlResult, result)
 
   defp parsing_keywords(keywords, user),
     do: Enum.map(keywords, &structuring_user_search(&1, user.id))

@@ -165,7 +165,12 @@
          files: %{
            excluded: [
              "lib/elixir_internal_certificate/account/accounts.ex",
+             "lib/elixir_internal_certificate/scrapper/schemas/search_result.ex",
+             "lib/elixir_internal_certificate/scrapper/scrappers.ex",
+             "lib/elixir_internal_certificate_worker/scrapper/user_search_worker.ex",
              "test/elixir_internal_certificate/account/accounts_test.exs",
+             "test/elixir_internal_certificate_worker/scrapper/helpers/job_queue_helper_test.exs",
+             "test/elixir_internal_certificate_worker/scrapper/user_search_worker_test.exs",
              "test/support/data_case.ex",
              "test/support/factory.ex"
            ]
