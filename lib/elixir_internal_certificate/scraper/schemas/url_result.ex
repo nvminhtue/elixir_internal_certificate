@@ -1,7 +1,7 @@
-defmodule ElixirInternalCertificate.Scrapper.Schemas.UrlResult do
+defmodule ElixirInternalCertificate.Scraper.Schemas.UrlResult do
   use Ecto.Schema
 
-  alias ElixirInternalCertificate.Scrapper.Schemas.SearchResult
+  alias ElixirInternalCertificate.Scraper.Schemas.SearchResult
 
   schema "url_results" do
     field :url, :string

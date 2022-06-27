@@ -1,10 +1,10 @@
-defmodule ElixirInternalCertificate.Scrapper.Scrappers do
+defmodule ElixirInternalCertificate.Scraper.Scrapers do
   @moduledoc """
-  The Scrappers context.
+  The Scrapers context.
   """
 
   alias ElixirInternalCertificate.Repo
-  alias ElixirInternalCertificate.Scrapper.Schemas.UserSearch
+  alias ElixirInternalCertificate.Scraper.Schemas.UserSearch
 
   def insert_search_keywords(attrs),
     do: Repo.insert_all(UserSearch, attrs)

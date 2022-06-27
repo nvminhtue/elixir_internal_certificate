@@ -1,8 +1,8 @@
-defmodule ElixirInternalCertificate.Scrapper.Schemas.UserSearch do
+defmodule ElixirInternalCertificate.Scraper.Schemas.UserSearch do
   use Ecto.Schema
 
   alias ElixirInternalCertificate.Account.Schemas.User
-  alias ElixirInternalCertificate.Scrapper.Schemas.SearchResult
+  alias ElixirInternalCertificate.Scraper.Schemas.SearchResult
 
   schema "user_searches" do
     field :keyword, :string

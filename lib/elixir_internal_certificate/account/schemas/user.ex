@@ -3,7 +3,7 @@ defmodule ElixirInternalCertificate.Account.Schemas.User do
 
   import Ecto.Changeset
 
-  alias ElixirInternalCertificate.Scrapper.Schemas.UserSearch
+  alias ElixirInternalCertificate.Scraper.Schemas.UserSearch
 
   @email_regex ~r/^[^\s]+@[^\s]+$/
   @email_max_length 160

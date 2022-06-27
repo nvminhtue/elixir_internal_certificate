@@ -1,7 +1,7 @@
-defmodule ElixirInternalCertificate.Scrapper.ScrappersTest do
+defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
   use ElixirInternalCertificate.DataCase, async: true
 
-  alias ElixirInternalCertificate.Scrapper.Scrappers
+  alias ElixirInternalCertificate.Scraper.Scrapers
 
   describe "insert_search_keywords/1" do
     test "with 2 valid keyword, it should create 2 records" do
@@ -12,7 +12,7 @@ defmodule ElixirInternalCertificate.Scrapper.ScrappersTest do
         %{keyword: ExMachina.Sequence.next("alphabet_sequence", ["A", "B"])}
       ]
 
-      assert Scrappers.insert_search_keywords(valid_user_search_attributes(attrs, user)) == {2, nil}
+      assert Scrapers.insert_search_keywords(valid_user_search_attributes(attrs, user)) == {2, nil}
     end
   end
 
@@ -25,14 +25,14 @@ defmodule ElixirInternalCertificate.Scrapper.ScrappersTest do
         ExMachina.Sequence.next("alphabet_sequence", ["A", "B"])
       ]
 
-      assert Scrappers.create_search_keyword(attrs, user) == 2
+      assert Scrapers.create_search_keyword(attrs, user) == 2
     end
 
     test "with no keyword imported, it should return value of 0" do
       user = insert(:user)
       attrs = []
 
-      assert Scrappers.create_search_keyword(attrs, user) == 0
+      assert Scrapers.create_search_keyword(attrs, user) == 0
     end
   end
 end

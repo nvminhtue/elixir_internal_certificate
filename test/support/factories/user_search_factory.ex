@@ -5,7 +5,7 @@ defmodule ElixirInternalCertificate.UserSearchFactory do
   """
   use ExMachina.Ecto, repo: ElixirInternalCertificate.Repo
 
-  alias ElixirInternalCertificate.Scrapper.Schemas.UserSearch
+  alias ElixirInternalCertificate.Scraper.Schemas.UserSearch
 
   defmacro __using__(_opts) do
     quote do

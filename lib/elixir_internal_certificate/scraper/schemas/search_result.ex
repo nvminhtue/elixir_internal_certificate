@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertificate.Scrapper.Schemas.SearchResult do
+defmodule ElixirInternalCertificate.Scraper.Schemas.SearchResult do
   use Ecto.Schema
 
   schema "search_results" do
@@ -9,11 +9,11 @@ defmodule ElixirInternalCertificate.Scrapper.Schemas.SearchResult do
     field :html_response, :string
 
     belongs_to :user_search,
-               ElixirInternalCertificate.Scrapper.Schemas.UserSearch,
+               ElixirInternalCertificate.Scraper.Schemas.UserSearch,
                foreign_key: :user_search_id
 
     has_many :url_results,
-             ElixirInternalCertificate.Scrapper.Schemas.UrlResult,
+             ElixirInternalCertificate.Scraper.Schemas.UrlResult,
              foreign_key: :search_result_id
 
     timestamps()

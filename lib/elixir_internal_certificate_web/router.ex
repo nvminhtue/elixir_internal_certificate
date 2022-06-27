@@ -78,7 +78,7 @@ defmodule ElixirInternalCertificateWeb.Router do
     delete "/users/log_out", UserSessionController, :delete
   end
 
-  # Scrapper routes, auth required
+  # Scraper routes, auth required
   scope "/", ElixirInternalCertificateWeb do
     pipe_through [:browser, :require_authenticated_user]
 
