@@ -9,7 +9,7 @@ defmodule ElixirInternalCertificate.Scrapper.Schemas.UserSearch do
 
     field :status,
           Ecto.Enum,
-          values: [:pending, :inprogress, :failed, :success],
+          values: [:pending, :in_progress, :failed, :success],
           default: :pending
 
     has_many :search_results, SearchResult

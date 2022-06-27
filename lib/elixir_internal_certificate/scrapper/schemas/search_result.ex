@@ -6,7 +6,7 @@ defmodule ElixirInternalCertificate.Scrapper.Schemas.SearchResult do
     field :ad_words_total, :integer
     field :non_ad_words_total, :integer
     field :links_total, :integer
-    field :preview, :string
+    field :html_response, :string
 
     belongs_to :user_search,
                ElixirInternalCertificate.Scrapper.Schemas.UserSearch,
