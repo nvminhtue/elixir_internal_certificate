@@ -4,7 +4,7 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
   """
 
   alias ElixirInternalCertificate.Repo
-  alias ElixirInternalCertificate.Scrapper.Schemas.{SearchResult, UrlResult, UserSearch}
+  alias ElixirInternalCertificate.Scraper.Schemas.{SearchResult, UrlResult, UserSearch}
 
   def insert_search_keywords(attrs),
     do: Repo.insert_all(UserSearch, attrs, returning: true)

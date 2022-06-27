@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertificate.Scrapper.ScrapperEngine do
+defmodule ElixirInternalCertificate.Scraper.ScraperEngine do
   @google_search_url "https://www.google.com/search?q="
   @headers [
     {

@@ -1,5 +1,5 @@
-defmodule ElixirInternalCertificateWorker.Scrapper.JobQueueHelper do
-  alias ElixirInternalCertificateWorker.Scrapper.UserSearchWorker
+defmodule ElixirInternalCertificateWorker.Scraper.JobQueueHelper do
+  alias ElixirInternalCertificateWorker.Scraper.UserSearchWorker
 
   def create_searching_queue(uploaded_keywords) do
     uploaded_keywords

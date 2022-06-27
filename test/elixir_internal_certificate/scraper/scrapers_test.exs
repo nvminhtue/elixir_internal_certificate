@@ -2,7 +2,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
   use ElixirInternalCertificate.DataCase, async: true
 
   alias ElixirInternalCertificate.Repo
-  alias ElixirInternalCertificate.Scrapper.Scrappers
+  alias ElixirInternalCertificate.Scraper.Scrapers
 
   describe "insert_search_keywords/1" do
     test "with 2 valid keyword, it should create 2 records" do
@@ -14,7 +14,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       ]
 
       {keywords_count, uploaded_keywords} =
-        Scrappers.insert_search_keywords(valid_user_search_attributes(attrs, user))
+        Scrapers.insert_search_keywords(valid_user_search_attributes(attrs, user))
 
       assert keywords_count == 2
       assert Enum.at(uploaded_keywords, 0).keyword == "A"
@@ -31,7 +31,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
         ExMachina.Sequence.next("alphabet_sequence", ["A", "B"])
       ]
 
-      {keywords_count, uploaded_keywords} = Scrappers.create_user_search(attrs, user)
+      {keywords_count, uploaded_keywords} = Scrapers.create_user_search(attrs, user)
 
       assert keywords_count == 2
       assert Enum.at(uploaded_keywords, 0).keyword == "A"
@@ -42,7 +42,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       user = insert(:user)
       attrs = []
 
-      {keywords_count, uploaded_keywords} = Scrappers.create_user_search(attrs, user)
+      {keywords_count, uploaded_keywords} = Scrapers.create_user_search(attrs, user)
 
       assert keywords_count == 0
       assert uploaded_keywords == []
@@ -55,14 +55,14 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
 
       assert user_search ==
                user_search.id
-               |> Scrappers.get_user_search()
+               |> Scrapers.get_user_search()
                |> Repo.preload(:user)
     end
 
     test "with an not existed record id, returns nil" do
       insert(:user_search, keyword: "dog")
 
-      assert Scrappers.get_user_search(-1) == nil
+      assert Scrapers.get_user_search(-1) == nil
     end
   end
 
@@ -70,7 +70,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
     test "given user_search and status, returns status updated user_search record" do
       user_search = insert(:user_search, keyword: "dog", status: :pending)
 
-      {status, result} = Scrappers.update_user_search_status(user_search, :success)
+      {status, result} = Scrapers.update_user_search_status(user_search, :success)
 
       assert status == :ok
       assert result.keyword == "dog"
@@ -97,7 +97,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
         user_search_id: user_search.id
       }
 
-      {status, result} = Scrappers.saving_search_result(attrs)
+      {status, result} = Scrapers.saving_search_result(attrs)
 
       assert status == :ok
       assert result.top_ad_words_total == 2

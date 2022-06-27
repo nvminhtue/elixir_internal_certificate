@@ -3,7 +3,7 @@ defmodule ElixirInternalCertificate.Scraper.Schemas.SearchResult do
 
   import Ecto.Changeset, only: [change: 2]
 
-  alias ElixirInternalCertificate.Scrapper.Schemas.{UrlResult, UserSearch}
+  alias ElixirInternalCertificate.Scraper.Schemas.{UrlResult, UserSearch}
 
   schema "search_results" do
     field :top_ad_words_total, :integer

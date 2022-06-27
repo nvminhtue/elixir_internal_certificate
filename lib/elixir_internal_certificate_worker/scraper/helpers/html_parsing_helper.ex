@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertificateWorker.Scrapper.HtmlParsingHelper do
+defmodule ElixirInternalCertificateWorker.Scraper.HtmlParsingHelper do
   def parsing(html_body) do
     {:ok, analyzed_data} = analyzing_html_body(html_body)
 

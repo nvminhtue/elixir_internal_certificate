@@ -1,8 +1,8 @@
-defmodule ElixirInternalCertificateWorker.Scrapper.UserSearchWorkerTest do
+defmodule ElixirInternalCertificateWorker.Scraper.UserSearchWorkerTest do
   use ElixirInternalCertificate.DataCase, async: false
 
-  alias ElixirInternalCertificateWorker.Scrapper.UserSearchWorker
-  alias ElixirInternalCertificate.Scrapper.Schemas.{SearchResult, UrlResult}
+  alias ElixirInternalCertificateWorker.Scraper.UserSearchWorker
+  alias ElixirInternalCertificate.Scraper.Schemas.{SearchResult, UrlResult}
 
   @max_attempts 3
 
@@ -12,7 +12,7 @@ defmodule ElixirInternalCertificateWorker.Scrapper.UserSearchWorkerTest do
 
   describe "perform/1" do
     test "updates status to inprogress for the uploaded keyword" do
-      use_cassette "scrappers/search_tv" do
+      use_cassette "scrapers/search_tv" do
         user_search = insert(:user_search, keyword: "tivi samsung 4k")
 
         assert user_search.status == :pending
@@ -37,7 +37,7 @@ defmodule ElixirInternalCertificateWorker.Scrapper.UserSearchWorkerTest do
     end
 
     test "updates status to failed when max attempts have been reached" do
-      use_cassette "scrappers/search_tv_failed" do
+      use_cassette "scrapers/search_tv_failed" do
         user_search = insert(:user_search, keyword: "tivi samsung 4k failed")
 
         UserSearchWorker.perform(%Oban.Job{

@@ -1,12 +1,12 @@
-defmodule ElixirInternalCertificateWorker.Scrapper.UserSearchWorker do
+defmodule ElixirInternalCertificateWorker.Scraper.UserSearchWorker do
   use Oban.Worker,
     queue: :user_search,
     max_attempts: 3,
     unique: [period: 30]
 
   alias ElixirInternalCertificate.Repo
-  alias ElixirInternalCertificate.Scrapper.{ScrapperEngine, Scrappers}
-  alias ElixirInternalCertificateWorker.Scrapper.HtmlParsingHelper
+  alias ElixirInternalCertificate.Scraper.{ScraperEngine, Scrapers}
+  alias ElixirInternalCertificateWorker.Scraper.HtmlParsingHelper
 
   @max_attempts 3
 
@@ -21,13 +21,13 @@ defmodule ElixirInternalCertificateWorker.Scrapper.UserSearchWorker do
   def perform(%Oban.Job{args: %{"user_search_id" => user_search_id}}) do
     {_, searching_keyword} = update_user_search(user_search_id, :in_progress)
 
-    {:ok, html_response} = ScrapperEngine.get_html(searching_keyword.keyword)
+    {:ok, html_response} = ScraperEngine.get_html(searching_keyword.keyword)
 
     {:ok, search_result} = HtmlParsingHelper.parsing(html_response)
 
     Repo.transaction(fn ->
       {:ok, search_result_record} =
-        Scrappers.saving_search_result(Map.put(search_result, :user_search_id, user_search_id))
+        Scrapers.saving_search_result(Map.put(search_result, :user_search_id, user_search_id))
 
       {:ok} = saving_url_results(search_result, search_result_record.id)
 
@@ -39,8 +39,8 @@ defmodule ElixirInternalCertificateWorker.Scrapper.UserSearchWorker do
 
   defp update_user_search(user_search_id, status) do
     user_search_id
-    |> Scrappers.get_user_search()
-    |> Scrappers.update_user_search_status(status)
+    |> Scrapers.get_user_search()
+    |> Scrapers.update_user_search_status(status)
   end
 
   defp saving_url_results(attrs, search_result_id) do
@@ -56,7 +56,7 @@ defmodule ElixirInternalCertificateWorker.Scrapper.UserSearchWorker do
         &structoring_url_result(&1, :ad_word, search_result_id)
       )
 
-    Scrappers.saving_url(non_ad_word_structure ++ ad_word_structure)
+    Scrapers.saving_url(non_ad_word_structure ++ ad_word_structure)
 
     {:ok}
   end

@@ -4,7 +4,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchController do
   alias ElixirInternalCertificate.Scraper.Scrapers
   alias ElixirInternalCertificateWeb.CsvParsingHelper
   alias ElixirInternalCertificateWeb.Router.Helpers, as: Routes
-  alias ElixirInternalCertificateWorker.Scrapper.JobQueueHelper
+  alias ElixirInternalCertificateWorker.Scraper.JobQueueHelper
 
   def index(conn, _params), do: render(conn, "index.html")
 
@@ -14,7 +14,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchController do
   def upload(conn, %{"file" => file}) do
     case CsvParsingHelper.validate_and_parse_keyword_file(file) do
       {:ok, keywords} ->
-        result = Scrappers.create_user_search(keywords, conn.assigns.current_user)
+        result = Scrapers.create_user_search(keywords, conn.assigns.current_user)
         {keywords_count, uploaded_keywords} = result
         JobQueueHelper.create_searching_queue(uploaded_keywords)
 

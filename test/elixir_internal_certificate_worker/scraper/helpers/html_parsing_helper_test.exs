@@ -1,7 +1,7 @@
-defmodule ElixirInternalCertificateWorker.Scrapper.HtmlParsingHelperTest do
+defmodule ElixirInternalCertificateWorker.Scraper.HtmlParsingHelperTest do
   use ElixirInternalCertificate.DataCase, async: true
 
-  alias ElixirInternalCertificateWorker.Scrapper.HtmlParsingHelper
+  alias ElixirInternalCertificateWorker.Scraper.HtmlParsingHelper
 
   describe "parsing/1" do
     test "give a html string, returns parsed data" do
