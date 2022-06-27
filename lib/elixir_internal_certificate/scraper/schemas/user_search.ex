@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificate.Scraper.Schemas.UserSearch do
   use Ecto.Schema
 
-  import Ecto.Changeset
+  import Ecto.Changeset, only: [change: 2]
 
   alias ElixirInternalCertificate.Account.Schemas.User
   alias ElixirInternalCertificate.Scraper.Schemas.SearchResult

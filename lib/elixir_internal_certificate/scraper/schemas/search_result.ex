@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificate.Scraper.Schemas.SearchResult do
   use Ecto.Schema
 
-  import Ecto.Changeset
+  import Ecto.Changeset, only: [change: 2]
 
   alias ElixirInternalCertificate.Scrapper.Schemas.{UrlResult, UserSearch}
 
@@ -26,7 +26,7 @@ defmodule ElixirInternalCertificate.Scraper.Schemas.SearchResult do
   def search_result_changeset(search_result \\ %__MODULE__{}, attrs),
     do:
       change(search_result, %{
-        preview: attrs.preview,
+        html_response: attrs.html_response,
         user_search_id: attrs.user_search_id,
         ad_words_total: attrs.ad_words_total,
         top_ad_words_total: attrs.top_ad_words_total,

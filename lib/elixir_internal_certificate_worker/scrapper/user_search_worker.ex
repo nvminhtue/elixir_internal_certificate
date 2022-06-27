@@ -19,7 +19,7 @@ defmodule ElixirInternalCertificateWorker.Scrapper.UserSearchWorker do
 
   @impl Oban.Worker
   def perform(%Oban.Job{args: %{"user_search_id" => user_search_id}}) do
-    {_, searching_keyword} = update_user_search(user_search_id, :inprogress)
+    {_, searching_keyword} = update_user_search(user_search_id, :in_progress)
 
     {:ok, html_response} = ScrapperEngine.get_html(searching_keyword.keyword)
 
@@ -37,11 +37,11 @@ defmodule ElixirInternalCertificateWorker.Scrapper.UserSearchWorker do
     :ok
   end
 
-  defp update_user_search(user_search_id, status),
-    do:
-      user_search_id
-      |> Scrappers.get_user_search()
-      |> Scrappers.update_user_search_status(status)
+  defp update_user_search(user_search_id, status) do
+    user_search_id
+    |> Scrappers.get_user_search()
+    |> Scrappers.update_user_search_status(status)
+  end
 
   defp saving_url_results(attrs, search_result_id) do
     non_ad_word_structure =

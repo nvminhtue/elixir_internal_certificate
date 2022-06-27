@@ -80,20 +80,20 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
 
   describe "saving_search_result/1" do
     test "with scrapped result, returns search_results" do
-      user_search = insert(:user_search, keyword: "dog", status: :inprogress)
+      user_search = insert(:user_search, keyword: "dog", status: :in_progress)
 
       top_ad_words_total = 2
       ad_words_total = 3
       non_ad_words_total = 4
       links_total = 7
-      preview = "<html></html>"
+      html_response = "<html></html>"
 
       attrs = %{
         top_ad_words_total: top_ad_words_total,
         ad_words_total: ad_words_total,
         non_ad_words_total: non_ad_words_total,
         links_total: links_total,
-        preview: preview,
+        html_response: html_response,
         user_search_id: user_search.id
       }
 
@@ -104,7 +104,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       assert result.ad_words_total == 3
       assert result.non_ad_words_total == 4
       assert result.links_total == 7
-      assert result.preview == "<html></html>"
+      assert result.html_response == "<html></html>"
     end
   end
 end

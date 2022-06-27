@@ -31,7 +31,7 @@ defmodule ElixirInternalCertificateWorker.Scrapper.UserSearchWorkerTest do
         assert search_result_record.top_ad_words_total == 5
         assert search_result_record.non_ad_words_total == 9
         assert search_result_record.links_total == 15
-        assert search_result_record.preview =~ "<!doctype html>"
+        assert search_result_record.html_response =~ "<!doctype html>"
         assert Enum.count(url_result) == 14
       end
     end

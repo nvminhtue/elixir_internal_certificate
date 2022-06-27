@@ -14,7 +14,7 @@ defmodule ElixirInternalCertificateWorker.Scrapper.HtmlParsingHelperTest do
       assert parsed_data.top_ad_words_total == 0
       assert parsed_data.non_ad_words_total == 9
       assert parsed_data.links_total == 22
-      assert parsed_data.preview == parsing_html
+      assert parsed_data.html_response == parsing_html
 
       assert parsed_data.non_ad_words_links == [
                ["https://www.dienmayxanh.com/tivi-lg%3Fg%3D55-inch"],

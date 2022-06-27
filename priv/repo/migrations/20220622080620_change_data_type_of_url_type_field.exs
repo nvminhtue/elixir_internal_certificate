@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificate.Repo.Migrations.ChangeDataTypeOfUrlTypeField do
   use Ecto.Migration
 
-  def change do
+  def up do
     alter table(:url_results) do
       modify :type, :string, nullable: false, default: "non_ad_word"
     end

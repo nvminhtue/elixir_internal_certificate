@@ -10,7 +10,7 @@ defmodule ElixirInternalCertificateWorker.Scrapper.HtmlParsingHelper do
        top_ad_words_total: Enum.count(calculated_data.top_ad_words_links),
        non_ad_words_total: calculated_data.non_ad_words_total,
        links_total: calculated_data.link_total,
-       preview: html_body,
+       html_response: html_body,
        non_ad_words_links: calculated_data.non_ad_words_links,
        top_ad_words_links: calculated_data.top_ad_words_links
      }}
