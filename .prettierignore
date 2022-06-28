@@ -6,5 +6,4 @@ priv
 cover/
 .github/
 README.md
-.vscode/
-test/support/fixtures
+*.json

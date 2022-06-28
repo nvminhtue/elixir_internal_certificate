@@ -1,9 +1,9 @@
 defmodule ElixirInternalCertificate.Scraper.Schemas.SearchResult do
   use Ecto.Schema
 
-  import Ecto.Changeset, only: [change: 2]
+  import Ecto.Changeset, only: [cast: 3]
 
-  alias ElixirInternalCertificate.Scraper.Schemas.{UrlResult, UserSearch}
+  alias ElixirInternalCertificate.Scraper.Schemas.UserSearch
 
   schema "search_results" do
     field :top_ad_words_total, :integer
@@ -11,26 +11,26 @@ defmodule ElixirInternalCertificate.Scraper.Schemas.SearchResult do
     field :non_ad_words_total, :integer
     field :links_total, :integer
     field :html_response, :string
+    field :non_ad_words_links, {:array, :string}
+    field :top_ad_words_links, {:array, :string}
 
     belongs_to :user_search,
                UserSearch,
                foreign_key: :user_search_id
 
-    has_many :url_results,
-             UrlResult,
-             foreign_key: :search_result_id
-
     timestamps()
   end
 
-  def search_result_changeset(search_result \\ %__MODULE__{}, attrs),
+  def create_changeset(search_result, attrs),
     do:
-      change(search_result, %{
-        html_response: attrs.html_response,
-        user_search_id: attrs.user_search_id,
-        ad_words_total: attrs.ad_words_total,
-        top_ad_words_total: attrs.top_ad_words_total,
-        non_ad_words_total: attrs.non_ad_words_total,
-        links_total: attrs.links_total
-      })
+      cast(search_result, attrs, [
+        :html_response,
+        :user_search_id,
+        :ad_words_total,
+        :top_ad_words_total,
+        :non_ad_words_total,
+        :links_total,
+        :non_ad_words_links,
+        :top_ad_words_links
+      ])
 end

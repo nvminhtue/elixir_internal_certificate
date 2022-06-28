@@ -26,10 +26,8 @@ defmodule ElixirInternalCertificateWorker.Scraper.UserSearchWorker do
     {:ok, search_result} = HtmlParsingHelper.parsing(html_response)
 
     Repo.transaction(fn ->
-      {:ok, search_result_record} =
-        Scrapers.saving_search_result(Map.put(search_result, :user_search_id, user_search_id))
-
-      {:ok} = saving_url_results(search_result, search_result_record.id)
+      {:ok, _} =
+        Scrapers.save_search_result(Map.put(search_result, :user_search_id, user_search_id))
 
       {:ok, _} = update_user_search(user_search_id, :success)
     end)
@@ -41,35 +39,5 @@ defmodule ElixirInternalCertificateWorker.Scraper.UserSearchWorker do
     user_search_id
     |> Scrapers.get_user_search()
     |> Scrapers.update_user_search_status(status)
-  end
-
-  defp saving_url_results(attrs, search_result_id) do
-    non_ad_word_structure =
-      Enum.map(
-        attrs.non_ad_words_links,
-        &structoring_url_result(&1, :non_ad_word, search_result_id)
-      )
-
-    ad_word_structure =
-      Enum.map(
-        attrs.top_ad_words_links,
-        &structoring_url_result(&1, :ad_word, search_result_id)
-      )
-
-    Scrapers.saving_url(non_ad_word_structure ++ ad_word_structure)
-
-    {:ok}
-  end
-
-  defp structoring_url_result([url | _] = _, type, search_result_id) do
-    current_time = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
-
-    %{
-      url: url,
-      type: type,
-      search_result_id: search_result_id,
-      inserted_at: current_time,
-      updated_at: current_time
-    }
   end
 end

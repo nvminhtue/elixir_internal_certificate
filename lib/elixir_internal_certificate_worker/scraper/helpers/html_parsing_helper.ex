@@ -58,11 +58,13 @@ defmodule ElixirInternalCertificateWorker.Scraper.HtmlParsingHelper do
 
     non_ad_words_total = trunc(Enum.count(analyzed_data.sliced_non_ad_words) || 0)
     link_total = non_ad_words_total + ad_words_total
-    non_ad_words_links = Enum.map(analyzed_data.sliced_non_ad_words, &Enum.slice(&1, -2, 1))
+
+    non_ad_words_links =
+      Enum.map(analyzed_data.sliced_non_ad_words, &Enum.at(Enum.slice(&1, -2, 1), 0))
 
     top_ad_words_links =
       (Enum.count(analyzed_data.has_banner_ad) != 0 &&
-         Enum.map(analyzed_data.banner_ad, &Enum.slice(&1, -1, 1))) ||
+         Enum.map(analyzed_data.banner_ad, &Enum.at(Enum.slice(&1, -1, 1), 0))) ||
         []
 
     {:ok,

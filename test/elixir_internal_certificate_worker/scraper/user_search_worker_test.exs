@@ -1,8 +1,8 @@
 defmodule ElixirInternalCertificateWorker.Scraper.UserSearchWorkerTest do
   use ElixirInternalCertificate.DataCase, async: false
 
+  alias ElixirInternalCertificate.Scraper.Schemas.SearchResult
   alias ElixirInternalCertificateWorker.Scraper.UserSearchWorker
-  alias ElixirInternalCertificate.Scraper.Schemas.{SearchResult, UrlResult}
 
   @max_attempts 3
 
@@ -22,7 +22,6 @@ defmodule ElixirInternalCertificateWorker.Scraper.UserSearchWorkerTest do
         reloaded_user_search = Repo.reload(user_search)
         search_result = Repo.all(SearchResult)
         search_result_record = Enum.at(search_result, 0)
-        url_result = Repo.all(UrlResult)
 
         assert reloaded_user_search.status == :success
         assert reloaded_user_search.keyword == "tivi samsung 4k"
@@ -32,7 +31,8 @@ defmodule ElixirInternalCertificateWorker.Scraper.UserSearchWorkerTest do
         assert search_result_record.non_ad_words_total == 9
         assert search_result_record.links_total == 15
         assert search_result_record.html_response =~ "<!doctype html>"
-        assert Enum.count(url_result) == 14
+        assert Enum.count(search_result_record.top_ad_words_links) == 5
+        assert Enum.count(search_result_record.non_ad_words_links) == 9
       end
     end
 
@@ -47,11 +47,9 @@ defmodule ElixirInternalCertificateWorker.Scraper.UserSearchWorkerTest do
 
         %{status: status} = Repo.reload(user_search)
         search_result = Repo.all(SearchResult)
-        url_result = Repo.all(UrlResult)
 
         assert status == :failed
         assert Enum.empty?(search_result)
-        assert Enum.empty?(url_result)
       end
     end
   end

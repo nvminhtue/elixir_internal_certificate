@@ -4,12 +4,12 @@ defmodule ElixirInternalCertificateWorker.Scraper.JobQueueHelperTest do
 
   alias ElixirInternalCertificateWorker.Scraper.{JobQueueHelper, UserSearchWorker}
 
-  describe "create_searching_queue/1" do
+  describe "enqueue_user_search_worker/1" do
     test "give 2 uploaded keywords, create 2 separate jobs" do
       first_keyword = insert(:user_search, keyword: "first")
       second_keyword = insert(:user_search, keyword: "second")
 
-      JobQueueHelper.create_searching_queue([
+      JobQueueHelper.enqueue_user_search_worker([
         first_keyword,
         second_keyword
       ])

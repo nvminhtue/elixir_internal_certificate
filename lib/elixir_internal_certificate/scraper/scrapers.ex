@@ -4,15 +4,21 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
   """
 
   alias ElixirInternalCertificate.Repo
-  alias ElixirInternalCertificate.Scraper.Schemas.{SearchResult, UrlResult, UserSearch}
+  alias ElixirInternalCertificate.Scraper.Schemas.{SearchResult, UserSearch}
+  alias ElixirInternalCertificateWorker.Scraper.JobQueueHelper
 
   def insert_search_keywords(attrs),
     do: Repo.insert_all(UserSearch, attrs, returning: true)
 
   def create_user_search(keywords, user) do
-    keywords
-    |> parsing_keywords(user)
-    |> insert_search_keywords()
+    {keyword_count, uploaded_keywords} =
+      keywords
+      |> parse_keywords(user)
+      |> insert_search_keywords()
+
+    JobQueueHelper.enqueue_user_search_worker(uploaded_keywords)
+
+    keyword_count
   end
 
   def get_user_search(id), do: Repo.get(UserSearch, id)
@@ -23,19 +29,16 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
     |> Repo.update()
   end
 
-  def saving_search_result(result) do
+  def save_search_result(result) do
     %SearchResult{}
-    |> SearchResult.search_result_changeset(result)
+    |> SearchResult.create_changeset(result)
     |> Repo.insert(returning: true)
   end
 
-  def saving_url(result),
-    do: Repo.insert_all(UrlResult, result)
+  defp parse_keywords(keywords, user),
+    do: Enum.map(keywords, &structure_user_search(&1, user.id))
 
-  defp parsing_keywords(keywords, user),
-    do: Enum.map(keywords, &structuring_user_search(&1, user.id))
-
-  defp structuring_user_search(keyword, user_id) do
+  defp structure_user_search(keyword, user_id) do
     current_time = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)
 
     %{

@@ -31,21 +31,18 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
         ExMachina.Sequence.next("alphabet_sequence", ["A", "B"])
       ]
 
-      {keywords_count, uploaded_keywords} = Scrapers.create_user_search(attrs, user)
+      keywords_count = Scrapers.create_user_search(attrs, user)
 
       assert keywords_count == 2
-      assert Enum.at(uploaded_keywords, 0).keyword == "A"
-      assert Enum.at(uploaded_keywords, 1).keyword == "B"
     end
 
     test "with no keyword imported, it should return value of 0" do
       user = insert(:user)
       attrs = []
 
-      {keywords_count, uploaded_keywords} = Scrapers.create_user_search(attrs, user)
+      keywords_count = Scrapers.create_user_search(attrs, user)
 
       assert keywords_count == 0
-      assert uploaded_keywords == []
     end
   end
 
@@ -78,7 +75,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
     end
   end
 
-  describe "saving_search_result/1" do
+  describe "save_search_result/1" do
     test "with scrapped result, returns search_results" do
       user_search = insert(:user_search, keyword: "dog", status: :in_progress)
 
@@ -87,6 +84,14 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       non_ad_words_total = 4
       links_total = 7
       html_response = "<html></html>"
+      top_ad_words_links = ["https://top1.com", "https://top2.com"]
+
+      non_ad_words_links = [
+        "https://non-ad1.com",
+        "https://non-ad2.com",
+        "https://non-ad3.com",
+        "https://non-ad4.com"
+      ]
 
       attrs = %{
         top_ad_words_total: top_ad_words_total,
@@ -94,17 +99,21 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
         non_ad_words_total: non_ad_words_total,
         links_total: links_total,
         html_response: html_response,
-        user_search_id: user_search.id
+        user_search_id: user_search.id,
+        top_ad_words_links: top_ad_words_links,
+        non_ad_words_links: non_ad_words_links
       }
 
-      {status, result} = Scrapers.saving_search_result(attrs)
+      {status, result} = Scrapers.save_search_result(attrs)
 
       assert status == :ok
-      assert result.top_ad_words_total == 2
-      assert result.ad_words_total == 3
-      assert result.non_ad_words_total == 4
       assert result.links_total == 7
+      assert result.ad_words_total == 3
+      assert result.top_ad_words_total == 2
+      assert result.non_ad_words_total == 4
       assert result.html_response == "<html></html>"
+      assert Enum.count(result.top_ad_words_links) == 2
+      assert Enum.count(result.non_ad_words_links) == 4
     end
   end
 end
