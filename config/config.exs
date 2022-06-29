@@ -68,7 +68,7 @@ config :phoenix, :json_library, Jason
 config :elixir_internal_certificate, Oban,
   repo: ElixirInternalCertificate.Repo,
   plugins: [Oban.Plugins.Pruner],
-  queues: [default: 10]
+  queues: [default: 10, user_search: 10]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

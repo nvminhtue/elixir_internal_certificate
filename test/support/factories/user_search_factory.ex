@@ -38,6 +38,12 @@ defmodule ElixirInternalCertificate.UserSearchFactory do
           content_type: MIME.from_path(file_path)
         }
       end
+
+      def read_dummy_file(file_path) do
+        file_path = Path.join([@fixture_path, file_path])
+
+        File.read!(file_path)
+      end
     end
   end
 end

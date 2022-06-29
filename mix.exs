@@ -70,7 +70,8 @@ defmodule ElixirInternalCertificate.MixProject do
       {:swoosh, "~> 1.3"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
-      {:wallaby, "~> 0.29.1", [only: :test, runtime: false]}
+      {:wallaby, "~> 0.29.1", [only: :test, runtime: false]},
+      {:httpoison, "~> 1.8.1"}
     ]
   end
 

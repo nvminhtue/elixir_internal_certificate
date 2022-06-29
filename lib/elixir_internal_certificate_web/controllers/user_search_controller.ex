@@ -13,10 +13,10 @@ defmodule ElixirInternalCertificateWeb.UserSearchController do
   def upload(conn, %{"file" => file}) do
     case CsvParsingHelper.validate_and_parse_keyword_file(file) do
       {:ok, keywords} ->
-        keywords_inserted = Scrapers.create_search_keyword(keywords, conn.assigns.current_user)
+        keywords_count = Scrapers.create_user_search(keywords, conn.assigns.current_user)
 
         conn
-        |> put_flash(:info, "File successfully uploaded. #{keywords_inserted} keywords uploaded.")
+        |> put_flash(:info, "File successfully uploaded. #{keywords_count} keywords uploaded.")
         |> redirect(to: Routes.user_search_path(conn, :index))
 
       {:error, :invalid_extension} ->
