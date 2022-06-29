@@ -115,5 +115,119 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       assert Enum.count(result.top_ad_words_links) == 2
       assert Enum.count(result.non_ad_words_links) == 4
     end
+
+    test "with scrapped result has no html, returns error" do
+      user_search = insert(:user_search, keyword: "dog", status: :in_progress)
+
+      top_ad_words_total = 2
+      ad_words_total = 3
+      non_ad_words_total = 4
+      links_total = 7
+      html_response = ""
+      top_ad_words_links = ["https://top1.com", "https://top2.com"]
+
+      non_ad_words_links = [
+        "https://non-ad1.com",
+        "https://non-ad2.com",
+        "https://non-ad3.com",
+        "https://non-ad4.com"
+      ]
+
+      attrs = %{
+        top_ad_words_total: top_ad_words_total,
+        ad_words_total: ad_words_total,
+        non_ad_words_total: non_ad_words_total,
+        links_total: links_total,
+        html_response: html_response,
+        user_search_id: user_search.id,
+        top_ad_words_links: top_ad_words_links,
+        non_ad_words_links: non_ad_words_links
+      }
+
+      {error, change} = Scrapers.save_search_result(attrs)
+
+      assert error
+      assert change.errors == [html_response: {"can't be blank", [validation: :required]}]
+    end
+
+    test "with scrapped result has negative value of top_ad_words_total, returns error" do
+      user_search = insert(:user_search, keyword: "dog", status: :in_progress)
+
+      top_ad_words_total = -1
+      ad_words_total = 3
+      non_ad_words_total = 4
+      links_total = 7
+      html_response = "<html></html>"
+      top_ad_words_links = ["https://top1.com", "https://top2.com"]
+
+      non_ad_words_links = [
+        "https://non-ad1.com",
+        "https://non-ad2.com",
+        "https://non-ad3.com",
+        "https://non-ad4.com"
+      ]
+
+      attrs = %{
+        top_ad_words_total: top_ad_words_total,
+        ad_words_total: ad_words_total,
+        non_ad_words_total: non_ad_words_total,
+        links_total: links_total,
+        html_response: html_response,
+        user_search_id: user_search.id,
+        top_ad_words_links: top_ad_words_links,
+        non_ad_words_links: non_ad_words_links
+      }
+
+      {error, change} = Scrapers.save_search_result(attrs)
+
+      assert error
+
+      assert change.errors == [
+               top_ad_words_total: {
+                 "must be greater than or equal to %{number}",
+                 [validation: :number, kind: :greater_than_or_equal_to, number: 0]
+               }
+             ]
+    end
+
+    test "with scrapped result has negative value of non_ad_words_total, returns error" do
+      user_search = insert(:user_search, keyword: "dog", status: :in_progress)
+
+      top_ad_words_total = 2
+      ad_words_total = 3
+      non_ad_words_total = -1
+      links_total = 7
+      html_response = "<html></html>"
+      top_ad_words_links = ["https://top1.com", "https://top2.com"]
+
+      non_ad_words_links = [
+        "https://non-ad1.com",
+        "https://non-ad2.com",
+        "https://non-ad3.com",
+        "https://non-ad4.com"
+      ]
+
+      attrs = %{
+        top_ad_words_total: top_ad_words_total,
+        ad_words_total: ad_words_total,
+        non_ad_words_total: non_ad_words_total,
+        links_total: links_total,
+        html_response: html_response,
+        user_search_id: user_search.id,
+        top_ad_words_links: top_ad_words_links,
+        non_ad_words_links: non_ad_words_links
+      }
+
+      {error, change} = Scrapers.save_search_result(attrs)
+
+      assert error
+
+      assert change.errors == [
+               non_ad_words_total: {
+                 "must be greater than or equal to %{number}",
+                 [validation: :number, kind: :greater_than_or_equal_to, number: 0]
+               }
+             ]
+    end
   end
 end

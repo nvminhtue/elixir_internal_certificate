@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificate.Scraper.Schemas.SearchResult do
   use Ecto.Schema
 
-  import Ecto.Changeset, only: [cast: 3]
+  import Ecto.Changeset, only: [cast: 3, validate_required: 2, validate_number: 3]
 
   alias ElixirInternalCertificate.Scraper.Schemas.UserSearch
 
@@ -23,7 +23,8 @@ defmodule ElixirInternalCertificate.Scraper.Schemas.SearchResult do
 
   def create_changeset(search_result, attrs),
     do:
-      cast(search_result, attrs, [
+      search_result
+      |> cast(attrs, [
         :html_response,
         :user_search_id,
         :ad_words_total,
@@ -33,4 +34,7 @@ defmodule ElixirInternalCertificate.Scraper.Schemas.SearchResult do
         :non_ad_words_links,
         :top_ad_words_links
       ])
+      |> validate_required(:html_response)
+      |> validate_number(:top_ad_words_total, greater_than_or_equal_to: 0)
+      |> validate_number(:non_ad_words_total, greater_than_or_equal_to: 0)
 end
