@@ -21,20 +21,20 @@ defmodule ElixirInternalCertificate.Scraper.Schemas.SearchResult do
     timestamps()
   end
 
-  def create_changeset(search_result, attrs),
-    do:
-      search_result
-      |> cast(attrs, [
-        :html_response,
-        :user_search_id,
-        :ad_words_total,
-        :top_ad_words_total,
-        :non_ad_words_total,
-        :links_total,
-        :non_ad_words_links,
-        :top_ad_words_links
-      ])
-      |> validate_required(:html_response)
-      |> validate_number(:top_ad_words_total, greater_than_or_equal_to: 0)
-      |> validate_number(:non_ad_words_total, greater_than_or_equal_to: 0)
+  def create_changeset(search_result, attrs) do
+    search_result
+    |> cast(attrs, [
+      :html_response,
+      :user_search_id,
+      :ad_words_total,
+      :top_ad_words_total,
+      :non_ad_words_total,
+      :links_total,
+      :non_ad_words_links,
+      :top_ad_words_links
+    ])
+    |> validate_required(:html_response)
+    |> validate_number(:top_ad_words_total, greater_than_or_equal_to: 0)
+    |> validate_number(:non_ad_words_total, greater_than_or_equal_to: 0)
+  end
 end
