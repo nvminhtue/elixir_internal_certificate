@@ -15,7 +15,7 @@ defmodule ElixirInternalCertificateWeb.HomePage.UploadCSVTest do
 
     session
     |> login_user()
-    |> attach_file(upload_field, path: "test/support/assets/files/upload.csv")
+    |> attach_file(upload_field, path: "test/support/assets/files/valid.csv")
 
     find(
       session,
@@ -23,7 +23,7 @@ defmodule ElixirInternalCertificateWeb.HomePage.UploadCSVTest do
       &assert(
         &1
         |> Wallaby.Element.value()
-        |> String.ends_with?("upload.csv")
+        |> String.ends_with?("valid.csv")
       )
     )
   end

@@ -10,6 +10,8 @@
     "lib/elixir_internal_certificate_web/channels/user_socket.ex",
     "lib/elixir_internal_certificate_web/views/error_helpers.ex",
     "lib/elixir_internal_certificate_web/controllers/api/fallback_controller.ex",
+    "lib/elixir_internal_certificate/scraper/schemas/search_result.ex",
+    "lib/elixir_internal_certificate/scraper/schemas/url_result.ex",
     "test/support"
   ],
   "coverage_options": {
