@@ -1,0 +1,74 @@
+<div>
+  <h1>Statistics</h1>
+  <table class="table table-hover" id="statistic">
+    <thead class="thead-default">
+      <tr>
+        <th>Top adwords total</th>
+        <th>Adwords total</th>
+        <th>Non adwords total</th>
+        <th>Links total</th>
+        <th>HTML response</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr role="button">
+        <th scope="row">1</th>
+        <td>Mark</td>
+        <td>Otto</td>
+        <td>Otto</td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="show-html"
+            data-bs-toggle="modal"
+            data-bs-target="#response-html"
+          >
+            Show
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br/>
+  <h1>List of top adword links</h1>
+  <table class="table table-hover" id="top-adword-links">
+    <thead class="thead-default">
+      <tr>
+        <th>Top adwords links</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr role="button">
+        <td>Otto</td>
+      </tr>
+      <tr role="button">
+        <td>Thornton</td>
+      </tr>
+      <tr role="button">
+        <td>the Bird</td>
+      </tr>
+    </tbody>
+  </table>
+  <br/>
+  <h1>List of non adword links</h1>
+  <table class="table table-hover">
+    <thead class="thead-default">
+      <tr>
+        <th>Non adwords links</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr role="button">
+        <td>Otto</td>
+      </tr>
+      <tr role="button">
+        <td>Thornton</td>
+      </tr>
+      <tr role="button">
+        <td>the Bird</td>
+      </tr>
+    </tbody>
+  </table>
+  <%= render "_html_response.html", assigns %>
+</div>

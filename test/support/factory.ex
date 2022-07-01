@@ -7,6 +7,7 @@ defmodule ElixirInternalCertificate.Factory do
   use ElixirInternalCertificate.{
     UserFactory,
     UserTokenFactory,
-    UserSearchFactory
+    UserSearchFactory,
+    SearchResultFactory
   }
 end

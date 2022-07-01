@@ -5,7 +5,13 @@ defmodule ElixirInternalCertificateWeb.UserSearchController do
   alias ElixirInternalCertificateWeb.CsvParsingHelper
   alias ElixirInternalCertificateWeb.Router.Helpers, as: Routes
 
-  def index(conn, _params), do: render(conn, "index.html")
+  def index(conn, _params) do
+    render(conn, "index.html")
+  end
+
+  def show(conn, _params) do
+    render(conn, "show.html")
+  end
 
   @doc """
   Handle uploaded CSV data

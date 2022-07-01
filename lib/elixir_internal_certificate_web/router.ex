@@ -84,6 +84,8 @@ defmodule ElixirInternalCertificateWeb.Router do
 
     get "/", UserSearchController, :index
 
+    get "/keywords/:id", UserSearchController, :show
+
     post "/upload", UserSearchController, :upload
   end
 end

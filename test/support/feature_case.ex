@@ -9,7 +9,7 @@ defmodule ElixirInternalCertificateWeb.FeatureCase do
 
       import ElixirInternalCertificate.Factory
       import ElixirInternalCertificateWeb.Gettext
-      import Wallaby.Query, only: [text_field: 1, button: 1, css: 2]
+      import Wallaby.Query
 
       alias ElixirInternalCertificate.Repo
       alias ElixirInternalCertificateWeb.Endpoint

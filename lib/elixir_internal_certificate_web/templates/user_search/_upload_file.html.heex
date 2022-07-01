@@ -1,0 +1,11 @@
+<.form id="keyword-upload-form" let={f} for={@conn} action={Routes.user_search_path(@conn, :upload)} multipart={true}>
+  <%= label f, :File, "Select CSV file, maximum 1000 keywords contained", class: "form-label" %>
+  <div class="d-flex me-4">
+    <%= file_input f, :file, accept: ".csv" , required: true, class: "form-control h-100 w-50 #{error_class(f, :file)}" %>
+    <%= error_tag f, :file %>
+
+    <div class="w-100">
+      <%= submit "Upload", class: "btn btn-primary btn-block ms-2" %>
+    </div>
+  </div>
+</.form>
