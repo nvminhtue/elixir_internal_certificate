@@ -5,12 +5,17 @@ defmodule ElixirInternalCertificateWeb.UserSearchController do
   alias ElixirInternalCertificateWeb.CsvParsingHelper
   alias ElixirInternalCertificateWeb.Router.Helpers, as: Routes
 
-  def index(conn, _params) do
-    render(conn, "index.html")
+  def index(%{assigns: %{current_user: %{id: user_id}}} = conn, params) do
+    page = Map.get(params, "page", 1)
+    data = Scrapers.get_user_searches(user_id, page)
+
+    render(conn, "index.html", data: data.entries, meta: build_meta_attrs(data))
   end
 
-  def show(conn, _params) do
-    render(conn, "show.html")
+  def show(conn, %{"id" => id} = _params) do
+    %{search_results: [data]} = Scrapers.get_user_search(id)
+
+    render(conn, "show.html", data: data)
   end
 
   @doc """
@@ -35,5 +40,14 @@ defmodule ElixirInternalCertificateWeb.UserSearchController do
         |> put_flash(:error, "Length invalid. 1-1000 keywords within 255 characters only")
         |> redirect(to: Routes.user_search_path(conn, :index))
     end
+  end
+
+  defp build_meta_attrs(payload) do
+    %{
+      page: payload.page_number,
+      page_size: payload.page_size,
+      total_pages: payload.total_pages,
+      total_entries: payload.total_entries
+    }
   end
 end

@@ -2,10 +2,14 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
   @moduledoc """
   The Scrapers context.
   """
+  import Ecto.Query
 
   alias ElixirInternalCertificate.Repo
   alias ElixirInternalCertificate.Scraper.Schemas.{SearchResult, UserSearch}
   alias ElixirInternalCertificateWorker.Scraper.JobQueueHelper
+
+  @default_page 1
+  @default_page_size 10
 
   def insert_search_keywords(attrs),
     do: Repo.insert_all(UserSearch, attrs, returning: true)
@@ -21,7 +25,18 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
     keyword_count
   end
 
-  def get_user_search(id), do: Repo.get(UserSearch, id)
+  def get_user_search(id) when is_integer(id) or is_binary(id) do
+    UserSearch
+    |> Repo.get(id)
+    |> Repo.preload(:search_results)
+  end
+
+  def get_user_searches(user_id, page \\ @default_page, page_size \\ @default_page_size) when is_integer(user_id) do
+    UserSearch
+    |> where([u], u.user_id == ^user_id)
+    |> order_by(asc: :id)
+    |> Repo.paginate(page: page, page_size: page_size)
+  end
 
   def update_user_search_status(user_search, status) do
     user_search

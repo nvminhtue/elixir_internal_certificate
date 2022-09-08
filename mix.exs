@@ -66,6 +66,7 @@ defmodule ElixirInternalCertificate.MixProject do
       {:phoenix_live_view, "~> 0.17.5"},
       {:plug_cowboy, "~> 2.5"},
       {:postgrex, ">= 0.0.0"},
+      {:scrivener_ecto, "~> 2.0"},
       {:sobelow, "~> 0.11.1", [only: [:dev, :test], runtime: false]},
       {:swoosh, "~> 1.3"},
       {:telemetry_metrics, "~> 0.6"},

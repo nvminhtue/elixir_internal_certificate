@@ -1,0 +1,61 @@
+<nav aria-label="Page navigation example" class="position-relative bottom-0 left-0 w-100">
+  <ul class="pagination pagination-circle pg-blue justify-content-center mb-1">
+    <%= if @meta.page != 1 do %>
+      <li class="page-item" role="button">
+        <a
+          class="page-link"
+          href={"/keywords/?page=#{1}"}
+        >
+          First
+        </a>
+      </li>
+      <li class="page-item" role="button">
+        <a
+          class="page-link"
+          aria-label="Previous"
+          href={"/keywords/?page=#{@meta.page-1}"}
+        >
+          <span aria-hidden="true">&laquo;</span>
+          <span class="sr-only">Previous</span>
+        </a>
+      </li>
+    <% else %>
+      <li class="page-item disabled" role="button">
+      <a class="page-link">
+        First
+      </a>
+    </li>
+    <li class="page-item disabled" role="button">
+      <a
+        class="page-link"
+        aria-label="Previous"
+      >
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    <% end %>
+    <%= for n <- 1..@meta.total_pages do %>
+      <li class="page-item pointer {is_active_page(n, @meta.page)}" role="button"><a class="page-link" href={"/keywords/?page=#{n}"}><%= n %></a></li>
+    <% end %>
+    <%= if @meta.page == @meta.total_pages do %>
+      <li class="page-item disabled" role="button">
+        <a class="page-link" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+      <li class="page-item disabled" role="button"><a class="page-link">Last</a></li>
+    <% else %>
+      <li class="page-item" role="button">
+        <a class="page-link" aria-label="Next"
+          href={"/keywords/?page=#{@meta.page+1}"}
+        >
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">Next</span>
+        </a>
+      </li>
+      <li class="page-item" role="button"><a class="page-link" href={"/keywords/?page=#{@meta.total_pages}"}>Last</a></li>
+    <% end %>
+  </ul>
+</nav>
