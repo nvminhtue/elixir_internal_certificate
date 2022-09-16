@@ -82,11 +82,9 @@ defmodule ElixirInternalCertificateWeb.Router do
   scope "/", ElixirInternalCertificateWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    get "/keywords", UserSearchController, :index
+    resources "/keywords", UserSearchController, only: [:index, :show]
 
     get "/", PageController, :index
-
-    get "/keywords/:id", UserSearchController, :show
 
     post "/upload", UserSearchController, :upload
   end

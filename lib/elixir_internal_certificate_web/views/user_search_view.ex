@@ -12,5 +12,5 @@ defmodule ElixirInternalCertificateWeb.UserSearchView do
 
   def is_active_page?(_page, nil), do: nil
 
-  def is_active_page?(page, target), do: if page == target, do: "active"
+  def is_active_page?(page, target), do: if(page == target, do: "active", else: "")
 end

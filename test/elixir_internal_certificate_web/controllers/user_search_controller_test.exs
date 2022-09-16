@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
   use ElixirInternalCertificateWeb.ConnCase, async: true
 
-  describe "GET /" do
+  describe "GET index/2" do
     test "when logged in user, returns home page", %{conn: conn} do
       user = insert(:user)
 
@@ -12,6 +12,58 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         })
         |> get("/")
 
+      assert redirected_to(conn) == "/keywords"
+
+      conn = get(conn, "/keywords")
+      assert html_response(conn, 200) =~ "Select CSV file, maximum 1000 keywords contained"
+    end
+
+    test "when logged in user, given a valid page params, returns home page", %{conn: conn} do
+      user = insert(:user)
+
+      conn =
+        conn
+        |> post(Routes.user_session_path(conn, :create), %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
+        })
+        |> get("/keywords/?page=1")
+
+      assert html_response(conn, 200) =~ "Select CSV file, maximum 1000 keywords contained"
+    end
+
+    test "when logged in user, given an exceeded page params, returns home page", %{conn: conn} do
+      user = insert(:user)
+      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, user: user)
+      insert(:user_search, keyword: "dog2", status: :in_progress, id: 2, user: user)
+
+      conn =
+        conn
+        |> post(Routes.user_session_path(conn, :create), %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
+        })
+        |> get("/keywords/?page=1")
+
+      assert html_response(conn, 200) =~ "Select CSV file, maximum 1000 keywords contained"
+    end
+
+    test "when logged in user, given an INVALID page params, returns home page with error flag", %{
+      conn: conn
+    } do
+      user = insert(:user)
+      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, user: user)
+
+      conn =
+        conn
+        |> post(Routes.user_session_path(conn, :create), %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
+        })
+        |> get("/keywords/?page=one")
+
+      assert redirected_to(conn) == "/keywords"
+
+      conn = get(conn, "/keywords")
+
+      assert get_flash(conn, :error) == "Page param error"
       assert html_response(conn, 200) =~ "Select CSV file, maximum 1000 keywords contained"
     end
 
@@ -27,7 +79,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
     end
   end
 
-  describe "GET /keywords/:id" do
+  describe "GET show/2" do
     test "when logged in user click on detail button, returns keyword result", %{conn: conn} do
       user = insert(:user)
       user_search = insert(:user_search, id: 1, user: user)
@@ -55,7 +107,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
     # Non existed records will be handled later
   end
 
-  describe "POST /upload" do
+  describe "POST upload/2" do
     test "when uploading valid file with logged in user, returns home page", %{conn: conn} do
       file = upload_dummy_file("valid.csv")
 
@@ -68,7 +120,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         |> fetch_flash()
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/keywords"
       assert get_flash(conn, :info) == "File successfully uploaded. 5 keywords uploaded."
     end
 
@@ -86,7 +138,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         |> fetch_flash()
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/keywords"
       assert get_flash(conn, :error) == "Length invalid. 1-1000 keywords within 255 characters only"
     end
 
@@ -103,7 +155,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         |> fetch_flash()
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/keywords"
       assert get_flash(conn, :error) == "Length invalid. 1-1000 keywords within 255 characters only"
     end
 
@@ -120,7 +172,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         |> fetch_flash()
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/keywords"
       assert get_flash(conn, :error) == "Length invalid. 1-1000 keywords within 255 characters only"
     end
 
@@ -137,7 +189,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         |> fetch_flash()
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/keywords"
       assert get_flash(conn, :error) == "File extension invalid, csv only"
     end
 

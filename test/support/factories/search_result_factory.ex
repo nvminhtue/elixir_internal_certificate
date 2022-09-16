@@ -9,8 +9,6 @@ defmodule ElixirInternalCertificate.SearchResultFactory do
 
   defmacro __using__(_opts) do
     quote do
-      @fixture_path "test/support/assets/files"
-
       def search_result_factory,
         do: %SearchResult{
           top_ad_words_total: Enum.random(0..15),

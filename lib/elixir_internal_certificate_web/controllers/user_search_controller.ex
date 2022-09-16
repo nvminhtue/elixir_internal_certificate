@@ -6,10 +6,16 @@ defmodule ElixirInternalCertificateWeb.UserSearchController do
   alias ElixirInternalCertificateWeb.Router.Helpers, as: Routes
 
   def index(%{assigns: %{current_user: %{id: user_id}}} = conn, params) do
-    page = Map.get(params, "page", 1)
-    data = Scrapers.get_user_searches(user_id, page)
+    case Integer.parse(Map.get(params, "page", "1"), 10) do
+      :error ->
+        conn
+        |> put_flash(:error, "Page param error")
+        |> redirect(to: "/keywords")
 
-    render(conn, "index.html", data: data.entries, meta: build_meta_attrs(data))
+      {page, ""} ->
+        data = Scrapers.get_user_searches(user_id, page)
+        render(conn, "index.html", data: data.entries, meta: build_meta_attrs(data))
+    end
   end
 
   def show(conn, %{"id" => id} = _params) do

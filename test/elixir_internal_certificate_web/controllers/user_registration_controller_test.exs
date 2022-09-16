@@ -33,7 +33,7 @@ defmodule ElixirInternalCertificateWeb.UserRegistrationControllerTest do
       assert redirected_to(conn) == "/"
 
       # Now do a logged in request and assert on the menu
-      logged_conn = get(conn, "/")
+      logged_conn = get(conn, "/keywords")
 
       response = html_response(logged_conn, 200)
 
