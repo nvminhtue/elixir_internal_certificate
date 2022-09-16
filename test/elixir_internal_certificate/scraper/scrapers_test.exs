@@ -214,7 +214,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
   end
 
   describe "get_user_search/1" do
-    test "given a valid number type of user_search id with existing search_results data, returns user_search and preloaded search_results" do
+    test "given a valid numeric type of user_search id with existing search_results data, returns user_search and preloaded search_results" do
       search_results =
         insert(:search_result,
           user_search: build(:user_search, keyword: "dog", status: :success, id: 1)
@@ -299,7 +299,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       assert result.total_pages == 1
     end
 
-    test "given a valid user_id having 12 keywords, valid page 2 and valid page_size, returns list of user_searches in page 2 and pagination meta" do
+    test "given a valid user_id having 12 keywords, and valid page 2, returns list of user_searches in page 2 and pagination meta" do
       user = insert(:user)
       insert_list(10, :user_search, user: user, inserted_at: ~N[2022-01-03 00:00:00])
 
@@ -331,7 +331,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       assert result.total_pages == 2
     end
 
-    test "given a valid user_id and blank page and page_size, returns list of user_searches with default first page, 10 page_size and pagination meta" do
+    test "given a valid user_id and blank page param, returns list of user_searches with default first page, 10 page_size and pagination meta" do
       user = insert(:user)
 
       insert(:user_search,
@@ -395,6 +395,20 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
 
     test "given a valid user_id of no related user_search record, returns a blank array with pagination meta" do
       user = insert(:user)
+
+      insert(:user_search,
+        keyword: "dog1",
+        status: :in_progress,
+        id: 1,
+        inserted_at: ~N[2022-01-01 00:00:00]
+      )
+
+      insert(:user_search,
+        keyword: "dog2",
+        status: :in_progress,
+        id: 2,
+        inserted_at: ~N[2022-01-02 00:00:00]
+      )
 
       assert result = Scrapers.get_user_searches(user.id)
 

@@ -36,7 +36,7 @@ defmodule ElixirInternalCertificateWeb.SearchList.ViewKeywordListTest do
       |> refute_has(Query.css(".pagination-section"))
     end
 
-    feature "with success user_search, renders enable detail button", %{session: session} do
+    feature "with success status user_search, renders enable detail button", %{session: session} do
       user = insert(:user)
       insert(:user_search, keyword: "dog1", status: :success, id: 1, user: user)
 
@@ -45,7 +45,7 @@ defmodule ElixirInternalCertificateWeb.SearchList.ViewKeywordListTest do
       |> assert_has(Query.text(Query.css(".btn.btn-primary.btn-block"), "Click for detail"))
     end
 
-    feature "with unsuccess user_search, renders disable detail button", %{session: session} do
+    feature "with unsuccess status user_search, renders disable detail button", %{session: session} do
       user = insert(:user)
       insert(:user_search, keyword: "dog1", status: :pending, id: 1, user: user)
 

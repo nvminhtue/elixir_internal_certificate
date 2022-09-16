@@ -127,7 +127,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
       end)
     end
 
-    test "when logged in user access to a other user's keyword detail, returns status 404", %{
+    test "when logged in user trying to access to another user's keyword detail, returns status 404", %{
       conn: conn
     } do
       user = insert(:user)
