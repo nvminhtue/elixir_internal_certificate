@@ -303,27 +303,27 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       user = insert(:user)
       insert_list(10, :user_search, user: user, inserted_at: ~N[2022-01-03 00:00:00])
 
-      insert(:user_search,
-        keyword: "dog1",
-        status: :in_progress,
-        id: 11,
-        user: user,
-        inserted_at: ~N[2022-01-01 00:00:00]
-      )
+      user_search_1 =
+        insert(:user_search,
+          keyword: "dog1",
+          status: :in_progress,
+          user: user,
+          inserted_at: ~N[2022-01-01 00:00:00]
+        )
 
-      insert(:user_search,
-        keyword: "dog2",
-        status: :in_progress,
-        id: 12,
-        user: user,
-        inserted_at: ~N[2022-01-02 00:00:00]
-      )
+      user_search_2 =
+        insert(:user_search,
+          keyword: "dog2",
+          status: :in_progress,
+          user: user,
+          inserted_at: ~N[2022-01-02 00:00:00]
+        )
 
       assert result = Scrapers.get_user_searches(user.id, 2)
 
       assert Enum.count(result.entries) == 2
-      assert Enum.at(result.entries, 0).id == 12
-      assert Enum.at(result.entries, 1).id == 11
+      assert Enum.at(result.entries, 0).id == user_search_2.id
+      assert Enum.at(result.entries, 1).id == user_search_1.id
 
       assert result.page_number == 2
       assert result.page_size == 10
