@@ -59,7 +59,8 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
     }
   end
 
-  defp preload_search_results(%UserSearch{} = user_search), do: Repo.preload(user_search, :search_results)
+  defp preload_search_results(%UserSearch{} = user_search),
+    do: Repo.preload(user_search, :search_results)
 
   defp preload_search_results(nil), do: nil
 end
