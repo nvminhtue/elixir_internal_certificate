@@ -2,6 +2,7 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
   alias ElixirInternalCertificate.Repo
   alias ElixirInternalCertificate.Scraper.Queries.UserSearchQuery
   alias ElixirInternalCertificate.Scraper.Schemas.{SearchResult, UserSearch}
+  alias ElixirInternalCertificate.Scraper.Queries.UserSearchQuery
   alias ElixirInternalCertificateWorker.Scraper.JobQueueHelper
 
   @default_page 1
