@@ -84,7 +84,9 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
   end
 
   describe "GET show/2" do
-    test "when logged in user click on detail button, returns keyword result", %{conn: conn} do
+    test "when logged in user click on detail button, returns status 200 and keyword result", %{
+      conn: conn
+    } do
       user = insert(:user)
       user_search = insert(:user_search, id: 1, user: user)
       insert(:search_result, user_search: user_search)
@@ -95,6 +97,48 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         |> get("/keywords/#{user_search.id}")
 
       assert html_response(conn, 200) =~ "Statistics"
+    end
+
+    test "when logged in user access to an existed keyword detail, returns status 200 and keyword result",
+         %{conn: conn} do
+      user = insert(:user)
+      user_search = insert(:user_search, id: 1, user: user)
+      insert(:search_result, user_search: user_search, id: 1)
+
+      conn =
+        conn
+        |> log_in_user(user)
+        |> get("/keywords/1")
+
+      assert html_response(conn, 200) =~ "Statistics"
+    end
+
+    test "when logged in user access to a non existed keyword detail, returns status 404", %{
+      conn: conn
+    } do
+      user = insert(:user)
+      user_search = insert(:user_search, id: 1, user: user)
+      insert(:search_result, user_search: user_search, id: 1)
+
+      assert_raise(Ecto.NoResultsError, fn ->
+        conn
+        |> log_in_user(user)
+        |> get("/keywords/10")
+      end)
+    end
+
+    test "when logged in user access to a other user's keyword detail, returns status 404", %{
+      conn: conn
+    } do
+      user = insert(:user)
+      user_search = insert(:user_search, id: 1)
+      insert(:search_result, user_search: user_search, id: 1)
+
+      assert_raise(Ecto.NoResultsError, fn ->
+        conn
+        |> log_in_user(user)
+        |> get("/keywords/1")
+      end)
     end
 
     test "when unauthenticated, returns login page", %{conn: conn} do

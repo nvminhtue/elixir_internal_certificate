@@ -253,7 +253,9 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
     test "given a NON-existing user_search id, returns nil" do
       insert(:user_search)
 
-      assert Scrapers.get_user_search("2") == nil
+      assert_raise Ecto.NoResultsError, fn ->
+        Scrapers.get_user_search("2")
+      end
     end
 
     test "given an INVALID user_search id, returns error" do
