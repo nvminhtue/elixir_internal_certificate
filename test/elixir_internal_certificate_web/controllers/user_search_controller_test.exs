@@ -14,8 +14,10 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
 
       assert redirected_to(conn) == "/keywords"
 
-      conn = get(conn, "/keywords")
-      assert html_response(conn, 200) =~ "Select CSV file, maximum 1000 keywords contained"
+      redirected_conn = get(conn, "/keywords")
+
+      assert html_response(redirected_conn, 200) =~
+               "Select CSV file, maximum 1000 keywords contained"
     end
 
     test "when logged in user, given a valid page params, returns home page", %{conn: conn} do
@@ -61,10 +63,12 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
 
       assert redirected_to(conn) == "/keywords"
 
-      conn = get(conn, "/keywords")
+      redirected_conn = get(conn, "/keywords")
 
-      assert get_flash(conn, :error) == "Page param error"
-      assert html_response(conn, 200) =~ "Select CSV file, maximum 1000 keywords contained"
+      assert get_flash(redirected_conn, :error) == "Page param error"
+
+      assert html_response(redirected_conn, 200) =~
+               "Select CSV file, maximum 1000 keywords contained"
     end
 
     test "when unauthenticated, returns login page", %{conn: conn} do

@@ -79,7 +79,9 @@ defmodule ElixirInternalCertificateWeb.SearchList.ViewKeywordListTest do
       |> assert_has(Query.css("h1", text: "List of non adword links"))
     end
 
-    feature "when click on html show button on result info, renders html response", %{session: session} do
+    feature "when click on html show button on result info, renders html response", %{
+      session: session
+    } do
       user = insert(:user)
       user_search = insert(:user_search, keyword: "dog1", status: :success, id: 1, user: user)
       insert(:search_result, user_search: user_search)

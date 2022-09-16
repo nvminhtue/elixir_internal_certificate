@@ -396,7 +396,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
 
       assert result = Scrapers.get_user_searches(user.id)
 
-      assert Enum.count(result.entries) == 0
+      assert Enum.empty?(result.entries) == true
 
       assert result.page_number == 1
       assert result.page_size == 10
@@ -421,7 +421,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
     test "given an INVALID user_id, returns error" do
       assert result = Scrapers.get_user_searches(10)
 
-      assert Enum.count(result.entries) == 0
+      assert Enum.empty?(result.entries) == true
 
       assert result.page_number == 1
       assert result.page_size == 10
