@@ -73,7 +73,7 @@ defmodule ElixirInternalCertificateWeb.SearchList.SearchingListTest do
 
       session
       |> login_user(user)
-      |> click(button("Click for detail"))
+      |> click(link("Click for detail"))
       |> assert_has(Query.css("h1", text: "Statistics"))
       |> assert_has(Query.css("h1", text: "List of top adword links"))
       |> assert_has(Query.css("h1", text: "List of non adword links"))
@@ -89,7 +89,7 @@ defmodule ElixirInternalCertificateWeb.SearchList.SearchingListTest do
       session =
         session
         |> login_user(user)
-        |> click(button("Click for detail"))
+        |> click(link("Click for detail"))
         |> click(button("Show"))
 
       assert page_source(session) =~ "<html"
