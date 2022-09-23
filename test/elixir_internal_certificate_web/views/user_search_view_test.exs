@@ -17,7 +17,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchViewTest do
       do: assert(UserSearchView.get_status(:success) == "text-success")
   end
 
-  describe "is_active_page/2" do
+  describe "is_active_page?/2" do
     test "with the same page and target, returns active status",
       do: assert(UserSearchView.is_active_page?(1, 1) == "active")
 
