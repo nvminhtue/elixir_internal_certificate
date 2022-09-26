@@ -13,4 +13,14 @@ defmodule ElixirInternalCertificateWeb.UserSearchView do
   def is_active_page?(_page, nil), do: nil
 
   def is_active_page?(page, target), do: if(page == target, do: "active", else: "")
+
+  def append_search_query(conn) do
+    search_query_value = conn.query_params["q"]
+    if (conn.query_params["q"]) do
+      "&q=#{search_query_value}"
+    else
+      ""
+    end
+
+  end
 end

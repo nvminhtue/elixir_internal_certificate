@@ -27,4 +27,12 @@ defmodule ElixirInternalCertificateWeb.UserSearchViewTest do
     test "with the nil target, returns nil status",
       do: assert(UserSearchView.is_active_page?(1, nil) == nil)
   end
+
+  describe "append_search_query/1" do
+    test "with an existing query params, returns the valid query string",
+      do: assert(UserSearchView.append_search_query(%{query_params: %{"q" => "keyword"}}) == "&q=keyword")
+
+    test "with a blank query params, returns the blank string",
+      do: assert(UserSearchView.append_search_query(%{query_params: %{}}) == "")
+  end
 end
