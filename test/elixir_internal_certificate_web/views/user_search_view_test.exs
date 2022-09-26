@@ -30,7 +30,8 @@ defmodule ElixirInternalCertificateWeb.UserSearchViewTest do
 
   describe "build_href_query/1" do
     test "with an existing query params and valid page, returns the valid query string" do
-        assert UserSearchView.build_href_query(%{query_params: %{"q" => "keyword"}}, 1) == "/keywords?page=1&q=keyword"
+      assert UserSearchView.build_href_query(%{query_params: %{"q" => "keyword"}}, 1) ==
+               "/keywords?page=1&q=keyword"
     end
 
     test "with a blank query params and valid page, returns a valid query string without search keyword" do

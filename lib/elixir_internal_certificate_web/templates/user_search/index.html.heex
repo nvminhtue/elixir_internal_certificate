@@ -1,6 +1,5 @@
 <section class="phx-hero">
   <%= render "_upload_form.html", assigns %>
-  <%= render "_search_keyword.html", assigns %>
   <%= render "_keyword_list.html", Map.put(assigns, :data, @data) %>
   <%= if @meta.total_pages > 1 do %>
     <%= render "_pagination.html", Map.put(assigns, :meta, @meta) %>
