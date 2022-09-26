@@ -11,6 +11,7 @@ defmodule ElixirInternalCertificateWeb.HomePage.SearchKeyword do
 
   feature "view filled in search item", %{session: session} do
     search_field = Query.text_field("q")
+
     session
     |> login_user()
     |> fill_in(text_field("q"), with: "keyword")
