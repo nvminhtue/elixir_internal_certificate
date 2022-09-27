@@ -6,6 +6,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchController do
   alias ElixirInternalCertificateWeb.Router.Helpers, as: Routes
 
   def index(%{assigns: %{current_user: %{id: user_id}}} = conn, params) do
+    # TODO: get keyword for querying
     case Integer.parse(Map.get(params, "page", "1"), 10) do
       :error ->
         conn
