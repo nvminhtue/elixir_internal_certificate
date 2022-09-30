@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertificateWeb.SearchList.SearchingListTest do
+defmodule ElixirInternalCertificateWeb.SearchList.ViewKeywordListTest do
   use ElixirInternalCertificateWeb.FeatureCase, async: true
 
   # No result case will be added later on.
