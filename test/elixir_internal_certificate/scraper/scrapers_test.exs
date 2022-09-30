@@ -213,14 +213,14 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
     end
   end
 
-  describe "get_user_search/1" do
+  describe "get_user_search_by_id/1" do
     test "given a valid numeric type of user_search id with existing search_results data, returns user_search and preloaded search_results" do
       search_results =
         insert(:search_result,
           user_search: build(:user_search, keyword: "dog", status: :success, id: 1)
         )
 
-      assert user_search_result = Scrapers.get_user_search(1)
+      assert user_search_result = Scrapers.get_user_search_by_id(1)
       assert user_search_result.id == 1
       assert user_search_result.status == :success
       assert user_search_result.keyword == "dog"
@@ -233,7 +233,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
           user_search: build(:user_search, keyword: "dog", status: :success, id: 1)
         )
 
-      assert user_search_result = Scrapers.get_user_search("1")
+      assert user_search_result = Scrapers.get_user_search_by_id("1")
       assert user_search_result.id == 1
       assert user_search_result.status == :success
       assert user_search_result.keyword == "dog"
@@ -243,7 +243,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
     test "given a valid user_search id with NON-existing search_results data, returns user_search and nil search_result" do
       insert(:user_search, keyword: "dog", status: :in_progress, id: 1)
 
-      assert user_search_result = Scrapers.get_user_search("1")
+      assert user_search_result = Scrapers.get_user_search_by_id("1")
       assert user_search_result.id == 1
       assert user_search_result.status == :in_progress
       assert user_search_result.keyword == "dog"
@@ -254,7 +254,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       insert(:user_search)
 
       assert_raise Ecto.NoResultsError, fn ->
-        Scrapers.get_user_search("2")
+        Scrapers.get_user_search_by_id("2")
       end
     end
 
@@ -262,12 +262,99 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       insert(:user_search)
 
       assert_raise FunctionClauseError, fn ->
-        Scrapers.get_user_search(:invalid)
+        Scrapers.get_user_search_by_id(:invalid)
       end
     end
   end
 
-  describe "get_user_searches/3" do
+  describe "get_user_search_by_user_id_and_id/2" do
+    test "given a valid numeric type of user_search id with existing search_results data and the valid author user_id,
+      returns user_search and preloaded search_results" do
+      user = insert(:user)
+
+      search_results =
+        insert(:search_result,
+          user_search: build(:user_search, keyword: "dog", status: :success, id: 1, user: user)
+        )
+
+      assert user_search_result = Scrapers.get_user_search_by_user_id_and_id(user.id, 1)
+      assert user_search_result.id == 1
+      assert user_search_result.status == :success
+      assert user_search_result.keyword == "dog"
+      assert Enum.at(user_search_result.search_results, 0).id == search_results.id
+    end
+
+    test "given a valid string type of user_search id with existing search_results data valid author user_id,
+      returns user_search and preloaded search_results" do
+      user = insert(:user)
+
+      search_results =
+        insert(:search_result,
+          user_search: build(:user_search, keyword: "dog", status: :success, id: 1, user: user)
+        )
+
+      assert user_search_result = Scrapers.get_user_search_by_user_id_and_id(user.id, "1")
+      assert user_search_result.id == 1
+      assert user_search_result.status == :success
+      assert user_search_result.keyword == "dog"
+      assert Enum.at(user_search_result.search_results, 0).id == search_results.id
+    end
+
+    test "given a valid user_search id with NON-existing search_results data and a valid user id, returns user_search and nil search_result" do
+      user = insert(:user)
+
+      insert(:user_search, keyword: "dog", status: :in_progress, id: 1, user: user)
+
+      assert user_search_result = Scrapers.get_user_search_by_user_id_and_id(user.id, "1")
+      assert user_search_result.id == 1
+      assert user_search_result.status == :in_progress
+      assert user_search_result.keyword == "dog"
+      assert Enum.at(user_search_result.search_results, 0) == nil
+    end
+
+    test "given a valid numeric type of user_search id with existing search_results data and the valid but not actual author user_id,
+      returns nil" do
+      user = insert(:user)
+
+      insert(:search_result,
+        user_search: build(:user_search, keyword: "dog", status: :success, id: 1)
+      )
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Scrapers.get_user_search_by_user_id_and_id(user.id, 1)
+      end
+    end
+
+    test "given a NON-existing user_search id and valid user id, returns nil" do
+      user = insert(:user)
+
+      insert(:user_search, user: user, id: 3)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Scrapers.get_user_search_by_user_id_and_id(user.id, "2")
+      end
+    end
+
+    test "given an INVALID user_search id and valid user id, returns error" do
+      user = insert(:user)
+
+      insert(:user_search)
+
+      assert_raise FunctionClauseError, fn ->
+        Scrapers.get_user_search_by_user_id_and_id(user.id, :invalid)
+      end
+    end
+
+    test "given an INVALID user id and valid user_search, raises Ecto.Query.CastError" do
+      user_search = insert(:user_search)
+
+      assert_raise Ecto.Query.CastError, fn ->
+        Scrapers.get_user_search_by_user_id_and_id(:invalid, user_search.id)
+      end
+    end
+  end
+
+  describe "get_user_searches/2" do
     test "given a valid user_id, valid page and valid page_size, returns list of user_searches and pagination meta" do
       user = insert(:user)
 

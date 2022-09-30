@@ -32,13 +32,14 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
     |> Repo.insert(returning: true)
   end
 
-  def get_user_search(user_id, id) when is_integer(id) or is_binary(id) do
+  def get_user_search_by_user_id_and_id(user_id, id)
+      when is_integer(id) or (is_binary(id) and is_integer(user_id)) do
     UserSearch
     |> Repo.get_by!(%{user_id: user_id, id: id})
     |> preload_search_results()
   end
 
-  def get_user_search(id) when is_integer(id) or is_binary(id) do
+  def get_user_search_by_id(id) when is_integer(id) or is_binary(id) do
     UserSearch
     |> Repo.get_by!(%{id: id})
     |> preload_search_results()
