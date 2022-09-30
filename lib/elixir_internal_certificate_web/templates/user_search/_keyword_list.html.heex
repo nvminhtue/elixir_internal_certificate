@@ -26,7 +26,7 @@
       <td class="text-warning">Pending</td>
       <td>
         <%=
-          button "Html response",
+          link "Html response",
           to: Routes.user_search_path(@conn, :show, 1),
           class: "btn btn-primary btn-block",
           method: :get
@@ -39,7 +39,7 @@
       <td class="text-info">Inprogess</td>
       <td>
         <%=
-          button "Html response",
+          link "Html response",
           to: Routes.user_search_path(@conn, :show, 1),
           class: "btn btn-primary btn-block",
           method: :get
@@ -52,7 +52,7 @@
       <td class="text-danger">Failed</td>
       <td>
         <%=
-          button "Html response",
+          link "Html response",
           to: Routes.user_search_path(@conn, :show, 1),
           class: "btn btn-primary btn-block",
           method: :get
