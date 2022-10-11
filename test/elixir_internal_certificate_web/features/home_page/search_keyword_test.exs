@@ -1,13 +1,12 @@
 defmodule ElixirInternalCertificateWeb.HomePage.SearchKeyword do
   use ElixirInternalCertificateWeb.FeatureCase, async: true
 
-  feature("search box component", %{session: session},
-    do:
-      session
-      |> login_user()
-      |> assert_has(Query.text("Search"))
-      |> assert_has(Query.css("#keyword-search-form"))
-  )
+  feature "search box component", %{session: session} do
+    session
+    |> login_user()
+    |> assert_has(Query.text("Search"))
+    |> assert_has(Query.css("#keyword-search-form"))
+  end
 
   feature "view filled in search item", %{session: session} do
     search_field = Query.text_field("q")
