@@ -27,4 +27,27 @@ defmodule ElixirInternalCertificateWeb.UserSearchViewTest do
     test "with the nil target, returns nil status",
       do: assert(UserSearchView.is_active_page?(1, nil) == nil)
   end
+
+  describe "build_href_query/1" do
+    test "with an existing query params and valid page, returns the valid query string" do
+      assert UserSearchView.build_href_query(%{query_params: %{"q" => "keyword"}}, 1) ==
+               "/keywords?page=1&q=keyword"
+    end
+
+    test "with a blank query params and valid page, returns a valid query string without search keyword" do
+      assert UserSearchView.build_href_query(%{query_params: %{}}, 1) == "/keywords?page=1"
+    end
+
+    test "with a valid query params and INVALID page, raises FunctionClauseError" do
+      assert_raise FunctionClauseError, fn ->
+        UserSearchView.build_href_query(%{query_params: %{}}, "invalid")
+      end
+    end
+
+    test "with a blank query params and INVALID page, raises FunctionClauseError" do
+      assert_raise FunctionClauseError, fn ->
+        UserSearchView.build_href_query(%{query_params: %{}}, "invalid")
+      end
+    end
+  end
 end

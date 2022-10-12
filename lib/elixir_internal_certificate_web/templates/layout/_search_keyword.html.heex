@@ -1,0 +1,10 @@
+<.form id="keyword-search-form" let={f} for={@conn} action={Routes.user_search_path(@conn, :index)} method="get">
+  <div class="d-flex me-4">
+    <div class="input-group">
+      <%= text_input f, :q, placeholder: "Search keywords...", class: "form-control h-100 w-50" %>
+      <span class="glyphicon glyphicon-warning-sign form-control-feedback"></span>      <div class="input-group-append">
+        <%= submit "Search", class: "btn btn-outline-secondary" %>
+      </div>
+    </div>
+  </div>
+</.form>

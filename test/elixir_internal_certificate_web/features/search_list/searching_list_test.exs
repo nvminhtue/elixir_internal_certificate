@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertificateWeb.SearchList.ViewKeywordListTest do
+defmodule ElixirInternalCertificateWeb.SearchList.SearchingListTest do
   use ElixirInternalCertificateWeb.FeatureCase, async: true
 
   describe "Visit search list page" do

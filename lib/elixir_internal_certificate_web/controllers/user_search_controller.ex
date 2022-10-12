@@ -20,6 +20,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchController do
 
   def show(%{assigns: %{current_user: %{id: user_id}}} = conn, %{"id" => id}) do
     %{search_results: [data]} = Scrapers.get_user_search_by_user_id_and_id(user_id, id)
+
     render(conn, "show.html", data: data)
   end
 
