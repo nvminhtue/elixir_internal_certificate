@@ -42,7 +42,7 @@ defmodule ElixirInternalCertificateWeb.SearchList.ViewKeywordListTest do
 
       session
       |> login_user(user)
-      |> assert_has(Query.text(Query.css(".btn.btn-primary.btn-block"), "Click for detail"))
+      |> assert_has(Query.text(Query.css(".btn.btn-primary.btn-block"), "Detail"))
     end
 
     feature "with unsuccess status user_search, renders disable detail button", %{session: session} do
@@ -73,7 +73,7 @@ defmodule ElixirInternalCertificateWeb.SearchList.ViewKeywordListTest do
 
       session
       |> login_user(user)
-      |> click(link("Click for detail"))
+      |> click(link("Detail"))
       |> assert_has(Query.css("h1", text: "Statistics"))
       |> assert_has(Query.css("h1", text: "List of top adword links"))
       |> assert_has(Query.css("h1", text: "List of non adword links"))
@@ -89,7 +89,7 @@ defmodule ElixirInternalCertificateWeb.SearchList.ViewKeywordListTest do
       session =
         session
         |> login_user(user)
-        |> click(link("Click for detail"))
+        |> click(link("Detail"))
         |> click(button("Show"))
 
       assert page_source(session) =~ "<html"
