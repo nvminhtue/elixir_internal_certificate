@@ -11,11 +11,11 @@
       </tr>
     </thead>
     <tbody>
-      <tr role="button">
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>Otto</td>
+      <tr role="button" class="align-middle">
+        <th scope="row"><%= @data.top_ad_words_total %></th>
+        <td><%= @data.ad_words_total %></td>
+        <td><%= @data.non_ad_words_total %></td>
+        <td><%= @data.links_total %></td>
         <td>
           <button
             type="button"
@@ -38,17 +38,7 @@
         <th>Top adwords links</th>
       </tr>
     </thead>
-    <tbody>
-      <tr role="button">
-        <td>Otto</td>
-      </tr>
-      <tr role="button">
-        <td>Thornton</td>
-      </tr>
-      <tr role="button">
-        <td>the Bird</td>
-      </tr>
-    </tbody>
+    <%= render "_list_of_links.html", Map.put(assigns, :links, @data.top_ad_words_links) %>
   </table>
   <br/>
   <h1>List of non adword links</h1>
@@ -58,17 +48,7 @@
         <th>Non adwords links</th>
       </tr>
     </thead>
-    <tbody>
-      <tr role="button">
-        <td>Otto</td>
-      </tr>
-      <tr role="button">
-        <td>Thornton</td>
-      </tr>
-      <tr role="button">
-        <td>the Bird</td>
-      </tr>
-    </tbody>
+    <%= render "_list_of_links.html", Map.put(assigns, :links, @data.non_ad_words_links) %>
   </table>
   <%= render "_html_response.html", assigns %>
 </div>

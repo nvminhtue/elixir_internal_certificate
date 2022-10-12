@@ -17,18 +17,18 @@ defmodule ElixirInternalCertificateWeb.FeatureCase do
 
       @moduletag :feature_test
 
-      def login_user(session, user \\ insert(:user)),
-        do:
-          session
-          |> visit(Routes.user_session_path(Endpoint, :new))
-          |> fill_in_login_form(user)
+      def login_user(session, user \\ insert(:user)) do
+        session
+        |> visit(Routes.user_session_path(Endpoint, :new))
+        |> fill_in_login_form(user)
+      end
 
-      defp fill_in_login_form(session, user),
-        do:
-          session
-          |> fill_in(text_field("user[email]"), with: user.email)
-          |> fill_in(text_field("user[password]"), with: valid_user_password())
-          |> click(button("Login"))
+      defp fill_in_login_form(session, user) do
+        session
+        |> fill_in(text_field("user[email]"), with: user.email)
+        |> fill_in(text_field("user[password]"), with: valid_user_password())
+        |> click(button("Login"))
+      end
     end
   end
 end

@@ -37,7 +37,7 @@ defmodule ElixirInternalCertificateWorker.Scraper.UserSearchWorker do
 
   defp update_user_search(user_search_id, status) do
     user_search_id
-    |> Scrapers.get_user_search()
+    |> Scrapers.get_user_search_by_id()
     |> Scrapers.update_user_search_status(status)
   end
 end
