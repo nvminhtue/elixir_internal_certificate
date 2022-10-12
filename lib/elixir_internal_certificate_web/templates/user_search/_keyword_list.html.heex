@@ -1,0 +1,64 @@
+<table class="table table-hover" id="search-result-table">
+  <thead class="thead-default">
+    <tr>
+      <th>#</th>
+      <th>Keyword</th>
+      <th>Status</th>
+      <th>Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr role="button" class="align-middle">
+      <td scope="row">1</td>
+      <td>Mark</td>
+      <td class="text-success">Success</td>
+      <td>
+        <%=
+          link "Html response",
+          to: Routes.user_search_path(@conn, :show, 1),
+          class: "btn btn-primary btn-block",
+          method: :get
+        %>
+      </td>
+    </tr>
+    <tr role="button" class="align-middle">
+      <td scope="row">2</td>
+      <td>Jacob</td>
+      <td class="text-warning">Pending</td>
+      <td>
+        <%=
+          button "Html response",
+          to: Routes.user_search_path(@conn, :show, 1),
+          class: "btn btn-primary btn-block",
+          method: :get
+        %>
+      </td>
+    </tr>
+    <tr role="button" class="align-middle">
+      <td scope="row">3</td>
+      <td>Larry</td>
+      <td class="text-info">Inprogess</td>
+      <td>
+        <%=
+          button "Html response",
+          to: Routes.user_search_path(@conn, :show, 1),
+          class: "btn btn-primary btn-block",
+          method: :get
+        %>
+      </td>
+    </tr>
+    <tr role="button" class="align-middle">
+      <td scope="row">4</td>
+      <td>Tom</td>
+      <td class="text-danger">Failed</td>
+      <td>
+        <%=
+          button "Html response",
+          to: Routes.user_search_path(@conn, :show, 1),
+          class: "btn btn-primary btn-block",
+          method: :get
+        %>
+      </td>
+    </tr>
+  </tbody>
+</table>
