@@ -374,7 +374,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
         inserted_at: ~N[2022-01-02 00:00:00]
       )
 
-      assert result = Scrapers.get_user_searches(user.id, 1)
+      assert result = Scrapers.get_user_searches(user.id, "dog", 1)
 
       assert Enum.count(result.entries) == 2
       assert Enum.at(result.entries, 0).id == 2
@@ -386,9 +386,14 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       assert result.total_pages == 1
     end
 
-    test "given a valid user_id having 12 keywords, and valid page 2, returns list of user_searches in page 2 and pagination meta" do
+    test "given a valid user_id having 12 keywords, valid page 2 and valid keyword, returns list of user_searches in page 2 and pagination meta" do
       user = insert(:user)
-      insert_list(10, :user_search, user: user, inserted_at: ~N[2022-01-03 00:00:00])
+
+      insert_list(10, :user_search,
+        keyword: "dog_list",
+        user: user,
+        inserted_at: ~N[2022-01-03 00:00:00]
+      )
 
       user_search_1 =
         insert(:user_search,
@@ -406,7 +411,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
           inserted_at: ~N[2022-01-02 00:00:00]
         )
 
-      assert result = Scrapers.get_user_searches(user.id, 2)
+      assert result = Scrapers.get_user_searches(user.id, "dog", 2)
 
       assert Enum.count(result.entries) == 2
       assert Enum.at(result.entries, 0).id == user_search_2.id
@@ -418,7 +423,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       assert result.total_pages == 2
     end
 
-    test "given a valid user_id and blank page param, returns list of user_searches with default first page, 10 page_size and pagination meta" do
+    test "given a valid user_id, valid page and blank keyword, returns list of user_searches and pagination meta" do
       user = insert(:user)
 
       insert(:user_search,
@@ -437,7 +442,146 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
         inserted_at: ~N[2022-01-02 00:00:00]
       )
 
-      assert result = Scrapers.get_user_searches(user.id)
+      assert result = Scrapers.get_user_searches(user.id, "", 1)
+
+      assert Enum.count(result.entries) == 2
+      assert Enum.at(result.entries, 0).id == 2
+      assert Enum.at(result.entries, 1).id == 1
+
+      assert result.page_number == 1
+      assert result.page_size == 10
+      assert result.total_entries == 2
+      assert result.total_pages == 1
+    end
+
+    test "given a valid user_id, valid page and nil keyword, returns list of user_searches and pagination meta" do
+      user = insert(:user)
+
+      insert(:user_search,
+        keyword: "dog1",
+        status: :in_progress,
+        id: 1,
+        user: user,
+        inserted_at: ~N[2022-01-01 00:00:00]
+      )
+
+      insert(:user_search,
+        keyword: "dog2",
+        status: :in_progress,
+        id: 2,
+        user: user,
+        inserted_at: ~N[2022-01-02 00:00:00]
+      )
+
+      assert result = Scrapers.get_user_searches(user.id, nil, 1)
+
+      assert Enum.count(result.entries) == 2
+      assert Enum.at(result.entries, 0).id == 2
+      assert Enum.at(result.entries, 1).id == 1
+
+      assert result.page_number == 1
+      assert result.page_size == 10
+      assert result.total_entries == 2
+      assert result.total_pages == 1
+    end
+
+    test "given a valid user_id having 12 keywords, valid page 1 and valid keyword matched 2 records,
+      returns list of user_searches in page 1 with 2 records and pagination meta" do
+      user = insert(:user)
+
+      insert_list(10, :user_search,
+        keyword: "cat_list",
+        user: user,
+        inserted_at: ~N[2022-01-03 00:00:00]
+      )
+
+      user_search_1 =
+        insert(:user_search,
+          keyword: "dog1",
+          status: :in_progress,
+          user: user,
+          inserted_at: ~N[2022-01-01 00:00:00]
+        )
+
+      user_search_2 =
+        insert(:user_search,
+          keyword: "dog2",
+          status: :in_progress,
+          user: user,
+          inserted_at: ~N[2022-01-02 00:00:00]
+        )
+
+      assert result = Scrapers.get_user_searches(user.id, "dog", 1)
+
+      assert Enum.count(result.entries) == 2
+      assert Enum.at(result.entries, 0).id == user_search_2.id
+      assert Enum.at(result.entries, 1).id == user_search_1.id
+
+      assert result.page_number == 1
+      assert result.page_size == 10
+      assert result.total_entries == 2
+      assert result.total_pages == 1
+    end
+
+    test "given a valid user_id and blank page param and valid keyword, returns list of user_searches with default first page matches keyword and pagination meta" do
+      user = insert(:user)
+
+      insert(:user_search,
+        keyword: "dog1",
+        status: :in_progress,
+        id: 1,
+        user: user,
+        inserted_at: ~N[2022-01-01 00:00:00]
+      )
+
+      insert(:user_search,
+        keyword: "dog2",
+        status: :in_progress,
+        id: 2,
+        user: user,
+        inserted_at: ~N[2022-01-02 00:00:00]
+      )
+
+      insert(:user_search,
+        keyword: "cat",
+        status: :in_progress,
+        id: 3,
+        user: user,
+        inserted_at: ~N[2022-01-03 00:00:00]
+      )
+
+      assert result = Scrapers.get_user_searches(user.id, "dog")
+
+      assert Enum.count(result.entries) == 2
+      assert Enum.at(result.entries, 0).id == 2
+      assert Enum.at(result.entries, 1).id == 1
+
+      assert result.page_number == 1
+      assert result.page_size == 10
+      assert result.total_entries == 2
+      assert result.total_pages == 1
+    end
+
+    test "given a valid user_id and blank page param and blank search keyword, returns list of all user_searches with default first page, 10 page_size and pagination meta" do
+      user = insert(:user)
+
+      insert(:user_search,
+        keyword: "dog1",
+        status: :in_progress,
+        id: 1,
+        user: user,
+        inserted_at: ~N[2022-01-01 00:00:00]
+      )
+
+      insert(:user_search,
+        keyword: "dog2",
+        status: :in_progress,
+        id: 2,
+        user: user,
+        inserted_at: ~N[2022-01-02 00:00:00]
+      )
+
+      assert result = Scrapers.get_user_searches(user.id, "")
 
       assert Enum.count(result.entries) == 2
       assert Enum.at(result.entries, 0).id == 2
@@ -468,7 +612,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
         inserted_at: ~N[2022-01-02 00:00:00]
       )
 
-      assert result = Scrapers.get_user_searches(user.id, 2)
+      assert result = Scrapers.get_user_searches(user.id, "dog", 2)
 
       assert Enum.count(result.entries) == 2
       assert Enum.at(result.entries, 0).id == 2
@@ -497,7 +641,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
         inserted_at: ~N[2022-01-02 00:00:00]
       )
 
-      assert result = Scrapers.get_user_searches(user.id)
+      assert result = Scrapers.get_user_searches(user.id, "")
 
       assert Enum.empty?(result.entries) == true
 
@@ -511,7 +655,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       user = insert(:user)
       insert(:user_search, keyword: "dog", status: :in_progress, id: 1, user: user)
 
-      assert result = Scrapers.get_user_searches(user.id)
+      assert result = Scrapers.get_user_searches(user.id, nil, "a")
 
       assert Enum.count(result.entries) == 1
 
@@ -522,7 +666,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
     end
 
     test "given an INVALID user_id, returns error" do
-      assert result = Scrapers.get_user_searches(10)
+      assert result = Scrapers.get_user_searches(10, "")
 
       assert Enum.empty?(result.entries) == true
 
