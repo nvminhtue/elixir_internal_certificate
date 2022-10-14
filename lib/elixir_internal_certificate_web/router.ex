@@ -25,12 +25,6 @@ defmodule ElixirInternalCertificateWeb.Router do
           ],
           ElixirInternalCertificateWeb.HealthPlug
 
-  scope "/", ElixirInternalCertificateWeb do
-    pipe_through :browser
-
-    get "/", PageController, :index
-  end
-
   # Other scopes may use custom stacks.
   # scope "/api", ElixirInternalCertificateWeb do
   #   pipe_through :api
@@ -82,5 +76,14 @@ defmodule ElixirInternalCertificateWeb.Router do
     pipe_through [:browser]
 
     delete "/users/log_out", UserSessionController, :delete
+  end
+
+  # Scraper routes, auth required
+  scope "/", ElixirInternalCertificateWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    get "/", UserSearchController, :index
+
+    post "/upload", UserSearchController, :upload
   end
 end
