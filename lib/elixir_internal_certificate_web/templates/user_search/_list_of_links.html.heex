@@ -1,0 +1,7 @@
+<tbody>
+  <%= for link <- @links do %>
+    <tr role="button">
+      <td><a href={"#{link}"}><%= link %></a></td>
+    </tr>
+  <% end %>
+</tbody>

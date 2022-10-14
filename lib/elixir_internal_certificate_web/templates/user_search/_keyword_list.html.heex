@@ -1,0 +1,29 @@
+<table class="table table-hover" id="search-result-table">
+  <thead class="thead-default">
+    <tr>
+      <th>Keyword</th>
+      <th style="width: 200px">Status</th>
+      <th style="width: 200px">Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for {user_search, i} <- Enum.with_index(@data, 1) do %>
+      <tr role="button" class="align-middle" key={i}>
+        <td><%= user_search.keyword %></td>
+        <td class={get_status(user_search.status)}><%= user_search.status %></td>
+        <td>
+          <%= if user_search.status == :success do %>
+            <%=
+              link "Details",
+              to: Routes.user_search_path(@conn, :show, user_search.id),
+              class: "btn btn-primary btn-block",
+              method: :get
+            %>
+          <% else %>
+            <button class="btn btn-primary btn-block disabled">Details</button>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

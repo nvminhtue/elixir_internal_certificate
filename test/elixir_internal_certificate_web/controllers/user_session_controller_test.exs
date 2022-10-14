@@ -23,15 +23,16 @@ defmodule ElixirInternalCertificateWeb.UserSessionControllerTest do
       user = insert(:user)
 
       conn =
-        post(conn, Routes.user_session_path(conn, :create), %{
+        conn
+        |> post(Routes.user_session_path(conn, :create), %{
           "user" => %{"email" => user.email, "password" => valid_user_password()}
         })
+        |> get("/keywords")
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == "/"
 
       # Now do a logged in request and assert on the menu
-      logged_conn = get(conn, "/")
+      logged_conn = get(conn, "/keywords")
       response = html_response(logged_conn, 200)
 
       assert response =~ user.email

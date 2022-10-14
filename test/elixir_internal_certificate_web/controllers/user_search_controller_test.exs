@@ -1,7 +1,7 @@
 defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
   use ElixirInternalCertificateWeb.ConnCase, async: true
 
-  describe "GET /" do
+  describe "GET index/2" do
     test "when logged in user, returns home page", %{conn: conn} do
       user = insert(:user)
 
@@ -12,7 +12,161 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         })
         |> get("/")
 
+      assert redirected_to(conn) == "/keywords"
+
+      redirected_conn = get(conn, "/keywords")
+
+      assert html_response(redirected_conn, 200) =~
+               "Select CSV file, maximum 1000 keywords contained"
+    end
+
+    test "when logged in user, given a valid page params, returns home page", %{conn: conn} do
+      user = insert(:user)
+
+      conn =
+        conn
+        |> post(Routes.user_session_path(conn, :create), %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
+        })
+        |> get("/keywords/?page=1")
+
       assert html_response(conn, 200) =~ "Select CSV file, maximum 1000 keywords contained"
+    end
+
+    test "when logged in user, given a valid page params and search query, returns home page with searched results",
+         %{
+           conn: conn
+         } do
+      user = insert(:user)
+      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, user: user)
+      insert(:user_search, keyword: "dog2", status: :in_progress, id: 2, user: user)
+
+      conn =
+        conn
+        |> post(Routes.user_session_path(conn, :create), %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
+        })
+        |> get("/keywords/?page=1&q=dog")
+
+      assert html_response(conn, 200) =~ "Select CSV file, maximum 1000 keywords contained"
+
+      assert Enum.count(conn.assigns.data) == 2
+
+      assert Enum.at(conn.assigns.data, 0).id == 1
+      assert Enum.at(conn.assigns.data, 0).keyword == "dog1"
+      assert Enum.at(conn.assigns.data, 1).id == 2
+      assert Enum.at(conn.assigns.data, 1).keyword == "dog2"
+    end
+
+    test "when logged in user, given a valid page params and no matched search query, returns home page with searched results",
+         %{
+           conn: conn
+         } do
+      user = insert(:user)
+      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, user: user)
+      insert(:user_search, keyword: "dog2", status: :in_progress, id: 2, user: user)
+
+      conn =
+        conn
+        |> post(Routes.user_session_path(conn, :create), %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
+        })
+        |> get("/keywords/?page=1&q=cat")
+
+      assert html_response(conn, 200) =~ "Select CSV file, maximum 1000 keywords contained"
+
+      assert Enum.empty?(conn.assigns.data) == true
+    end
+
+    test "when logged in user, given an exceeded page params, returns home page with searched results",
+         %{conn: conn} do
+      user = insert(:user)
+      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, user: user)
+      insert(:user_search, keyword: "dog2", status: :in_progress, id: 2, user: user)
+
+      conn =
+        conn
+        |> post(Routes.user_session_path(conn, :create), %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
+        })
+        |> get("/keywords/?page=2")
+
+      assert html_response(conn, 200) =~ "Select CSV file, maximum 1000 keywords contained"
+
+      assert Enum.count(conn.assigns.data) == 2
+      assert Enum.at(conn.assigns.data, 0).id == 1
+      assert Enum.at(conn.assigns.data, 0).keyword == "dog1"
+      assert Enum.at(conn.assigns.data, 1).id == 2
+      assert Enum.at(conn.assigns.data, 1).keyword == "dog2"
+    end
+
+    test "when logged in user, given an exceeded page params and search query, returns home page with searched results",
+         %{conn: conn} do
+      user = insert(:user)
+      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, user: user)
+      insert(:user_search, keyword: "dog2", status: :in_progress, id: 2, user: user)
+
+      conn =
+        conn
+        |> post(Routes.user_session_path(conn, :create), %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
+        })
+        |> get("/keywords/?page=2&q=dog")
+
+      assert html_response(conn, 200) =~ "Select CSV file, maximum 1000 keywords contained"
+
+      assert Enum.count(conn.assigns.data) == 2
+      assert Enum.at(conn.assigns.data, 0).id == 1
+      assert Enum.at(conn.assigns.data, 0).keyword == "dog1"
+      assert Enum.at(conn.assigns.data, 1).id == 2
+      assert Enum.at(conn.assigns.data, 1).keyword == "dog2"
+    end
+
+    test "when logged in user, given an INVALID page params, returns home page with error flag", %{
+      conn: conn
+    } do
+      user = insert(:user)
+      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, user: user)
+
+      conn =
+        conn
+        |> post(Routes.user_session_path(conn, :create), %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
+        })
+        |> get("/keywords/?page=one")
+
+      assert redirected_to(conn) == "/keywords"
+
+      redirected_conn = get(conn, "/keywords")
+
+      assert get_flash(redirected_conn, :error) == "Page param error"
+
+      assert html_response(redirected_conn, 200) =~
+               "Select CSV file, maximum 1000 keywords contained"
+    end
+
+    test "when logged in user, given an INVALID page params and valid search query, returns home page with error flag",
+         %{
+           conn: conn
+         } do
+      user = insert(:user)
+      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, user: user)
+
+      conn =
+        conn
+        |> post(Routes.user_session_path(conn, :create), %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
+        })
+        |> get("/keywords/?page=one&q=dog")
+
+      assert redirected_to(conn) == "/keywords"
+
+      redirected_conn = get(conn, "/keywords")
+
+      assert get_flash(redirected_conn, :error) == "Page param error"
+
+      assert html_response(redirected_conn, 200) =~
+               "Select CSV file, maximum 1000 keywords contained"
     end
 
     test "when unauthenticated, returns login page", %{conn: conn} do
@@ -27,7 +181,80 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
     end
   end
 
-  describe "POST /upload" do
+  describe "GET show/2" do
+    test "when logged in user click on detail button, returns status 200 and keyword result", %{
+      conn: conn
+    } do
+      user = insert(:user)
+      user_search = insert(:user_search, id: 1, user: user)
+      insert(:search_result, user_search: user_search)
+
+      conn =
+        conn
+        |> log_in_user(user)
+        |> get("/keywords/#{user_search.id}")
+
+      assert html_response(conn, 200) =~ "Statistics"
+    end
+
+    test "when logged in user access to an existed keyword detail, returns status 200 and keyword result",
+         %{conn: conn} do
+      user = insert(:user)
+      user_search = insert(:user_search, id: 1, user: user)
+      insert(:search_result, user_search: user_search, id: 1)
+
+      conn =
+        conn
+        |> log_in_user(user)
+        |> get("/keywords/1")
+
+      assert html_response(conn, 200) =~ "Statistics"
+    end
+
+    test "when logged in user access to a non existed keyword detail, returns status 404", %{
+      conn: conn
+    } do
+      user = insert(:user)
+      user_search = insert(:user_search, id: 1, user: user)
+      insert(:search_result, user_search: user_search, id: 1)
+
+      assert_raise(Ecto.NoResultsError, fn ->
+        conn
+        |> log_in_user(user)
+        |> get("/keywords/10")
+      end)
+    end
+
+    test "when logged in user trying to access to another user's keyword detail, returns status 404",
+         %{
+           conn: conn
+         } do
+      user = insert(:user)
+      user_search = insert(:user_search, id: 1)
+      insert(:search_result, user_search: user_search, id: 1)
+
+      assert_raise(Ecto.NoResultsError, fn ->
+        conn
+        |> log_in_user(user)
+        |> get("/keywords/1")
+      end)
+    end
+
+    test "when unauthenticated, returns login page", %{conn: conn} do
+      response =
+        conn
+        |> bypass_through(ElixirInternalCertificateWeb.Router, :browser)
+        |> get("/")
+        |> get("/users/log_in")
+        |> html_response(200)
+
+      assert response =~ "Login"
+    end
+
+    # Non existed records will be handled later
+  end
+
+  describe "POST upload/2" do
     test "when uploading valid file with logged in user, returns home page", %{conn: conn} do
       file = upload_dummy_file("valid.csv")
 
@@ -40,7 +267,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         |> fetch_flash()
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/keywords"
       assert get_flash(conn, :info) == "File successfully uploaded. 5 keywords uploaded."
     end
 
@@ -58,7 +285,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         |> fetch_flash()
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/keywords"
       assert get_flash(conn, :error) == "Length invalid. 1-1000 keywords within 255 characters only"
     end
 
@@ -75,7 +302,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         |> fetch_flash()
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/keywords"
       assert get_flash(conn, :error) == "Length invalid. 1-1000 keywords within 255 characters only"
     end
 
@@ -92,7 +319,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         |> fetch_flash()
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/keywords"
       assert get_flash(conn, :error) == "Length invalid. 1-1000 keywords within 255 characters only"
     end
 
@@ -109,7 +336,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
         |> fetch_flash()
 
       assert get_session(conn, :user_token)
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/keywords"
       assert get_flash(conn, :error) == "File extension invalid, csv only"
     end
 
