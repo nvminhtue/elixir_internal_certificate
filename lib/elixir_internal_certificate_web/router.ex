@@ -88,4 +88,13 @@ defmodule ElixirInternalCertificateWeb.Router do
 
     post "/upload", UserSearchController, :upload
   end
+
+  #API
+    scope "/api/v1", ElixirInternalCertificateWeb.Api.V1, as: :api do
+    pipe_through [
+      :api
+    ]
+
+    post "/register", UserAuth, :new
+  end
 end
