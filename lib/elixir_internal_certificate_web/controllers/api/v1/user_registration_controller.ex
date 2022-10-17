@@ -1,4 +1,4 @@
-defmodule ElixirInternalCertificateWeb.Api.V1.UserAuth do
+defmodule ElixirInternalCertificateWeb.Api.V1.UserRegistrationController do
   use ElixirInternalCertificateWeb, :controller
 
   alias ElixirInternalCertificate.Account.Accounts
@@ -6,7 +6,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserAuth do
   alias ElixirInternalCertificateWeb.Api.V1.UserRegistrationView
   alias ElixirInternalCertificateWeb.Api.ErrorView
 
-  def new(conn, params) do
+  def create(conn, params) do
     with changeset <- Accounts.change_user_registration(%User{}, params),
          {:ok, user} <- Accounts.register_user(changeset.changes) do
       conn
