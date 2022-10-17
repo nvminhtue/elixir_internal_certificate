@@ -3,8 +3,8 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserRegistrationController do
 
   alias ElixirInternalCertificate.Account.Accounts
   alias ElixirInternalCertificate.Account.Schemas.User
-  alias ElixirInternalCertificateWeb.Api.V1.UserRegistrationView
   alias ElixirInternalCertificateWeb.Api.ErrorView
+  alias ElixirInternalCertificateWeb.Api.V1.UserRegistrationView
 
   def create(conn, params) do
     with changeset <- Accounts.change_user_registration(%User{}, params),
