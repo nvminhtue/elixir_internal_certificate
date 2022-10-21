@@ -1,5 +1,6 @@
 import Config
 
+secret_key = "q9Yh2N0Y//d0+r83EgBvyMl213dt5TcaJpctnRW+qXK/11P1RfgVevik0IyMTYkL"
 # Configure your database
 config :elixir_internal_certificate, ElixirInternalCertificate.Repo,
   username: "postgres",
@@ -22,7 +23,7 @@ config :elixir_internal_certificate, ElixirInternalCertificateWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "q9Yh2N0Y//d0+r83EgBvyMl213dt5TcaJpctnRW+qXK/11P1RfgVevik0IyMTYkL",
+  secret_key_base: secret_key,
   watchers: [
     app_sass: {
       DartSass,
@@ -72,6 +73,10 @@ config :elixir_internal_certificate, ElixirInternalCertificateWeb.Endpoint,
       ~r"lib/elixir_internal_certificate_web/templates/.*(eex)$"
     ]
   ]
+
+# Config Guardian Oauth2
+config :elixir_internal_certificate, ElixirInternalCertificate.Account.Guardian,
+  secret_key: secret_key
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

@@ -96,5 +96,7 @@ defmodule ElixirInternalCertificateWeb.Router do
     ]
 
     post "/register", UserRegistrationController, :create
+
+    post "/log_in", UserSessionController, :create
   end
 end
