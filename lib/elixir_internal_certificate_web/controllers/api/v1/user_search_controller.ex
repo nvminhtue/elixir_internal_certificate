@@ -27,6 +27,10 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
     end
   end
 
+  def show do
+    # TODO: Getting search result info
+  end
+
   defp build_meta_attrs(payload) do
     %{
       page: payload.page_number,
