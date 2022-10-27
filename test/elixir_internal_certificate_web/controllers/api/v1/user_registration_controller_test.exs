@@ -18,7 +18,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserRegistrationControllerTest do
              } = json_response(conn, 200)
     end
 
-    test "given an existing email and valid password, returns status 400", %{conn: conn} do
+    test "given an existing email and valid password, returns status 422", %{conn: conn} do
       insert(:user, email: "existing@mail.com")
 
       conn =
@@ -40,7 +40,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserRegistrationControllerTest do
              }
     end
 
-    test "given a blank email and blank password, returns status 400", %{conn: conn} do
+    test "given a blank email and blank password, returns status 422", %{conn: conn} do
       conn =
         post(conn, Routes.api_user_registration_path(conn, :create), %{
           email: "",

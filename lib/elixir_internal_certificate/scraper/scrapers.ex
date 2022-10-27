@@ -45,8 +45,7 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
     |> preload_search_results()
   end
 
-  def get_user_searches(user_id, search_keyword, page \\ @default_page)
-      when is_integer(user_id) do
+  def get_user_searches(user_id, search_keyword, page \\ @default_page) do
     user_id
     |> UserSearchQuery.fetch_user_search_by_user_id_and_keyword(search_keyword)
     |> Repo.paginate(page: page)
