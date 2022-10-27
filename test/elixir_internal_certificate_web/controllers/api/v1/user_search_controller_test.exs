@@ -86,7 +86,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
              } = json_response(conn, 422)
     end
 
-    test "when unauthenticated user, returns list of keywords and 200 status",
+    test "when unauthenticated user, returns 401 status",
          %{conn: conn} do
       user = insert(:user)
       insert(:user_search, keyword: "keyword 1", status: :success, user: user)
