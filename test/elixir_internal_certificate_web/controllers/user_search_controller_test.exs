@@ -38,8 +38,8 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
            conn: conn
          } do
       user = insert(:user)
-      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, user: user)
-      insert(:user_search, keyword: "dog2", status: :in_progress, id: 2, user: user)
+      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, inserted_at: ~N[2022-10-11 00:00:00], user: user)
+      insert(:user_search, keyword: "dog2", status: :in_progress, id: 2, inserted_at: ~N[2022-10-10 00:00:00], user: user)
 
       conn =
         conn
@@ -63,8 +63,8 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
            conn: conn
          } do
       user = insert(:user)
-      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, user: user)
-      insert(:user_search, keyword: "dog2", status: :in_progress, id: 2, user: user)
+      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, inserted_at: ~N[2022-10-11 00:00:00], user: user)
+      insert(:user_search, keyword: "dog2", status: :in_progress, id: 2, inserted_at: ~N[2022-10-10 00:00:00], user: user)
 
       conn =
         conn
@@ -81,8 +81,8 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
     test "when logged in user, given an exceeded page params, returns home page with searched results",
          %{conn: conn} do
       user = insert(:user)
-      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, user: user)
-      insert(:user_search, keyword: "dog2", status: :in_progress, id: 2, user: user)
+      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, inserted_at: ~N[2022-10-11 00:00:00], user: user)
+      insert(:user_search, keyword: "dog2", status: :in_progress, id: 2, inserted_at: ~N[2022-10-10 00:00:00], user: user)
 
       conn =
         conn
@@ -103,8 +103,8 @@ defmodule ElixirInternalCertificateWeb.UserSearchControllerTest do
     test "when logged in user, given an exceeded page params and search query, returns home page with searched results",
          %{conn: conn} do
       user = insert(:user)
-      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, user: user)
-      insert(:user_search, keyword: "dog2", status: :in_progress, id: 2, user: user)
+      insert(:user_search, keyword: "dog1", status: :in_progress, id: 1, inserted_at: ~N[2022-10-11 00:00:00], user: user)
+      insert(:user_search, keyword: "dog2", status: :in_progress, id: 2, inserted_at: ~N[2022-10-10 00:00:00], user: user)
 
       conn =
         conn

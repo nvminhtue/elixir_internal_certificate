@@ -3,6 +3,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
 
   alias ElixirInternalCertificate.Scraper.Scrapers
   alias ElixirInternalCertificateWeb.Api.ErrorView
+  alias ElixirInternalCertificateWeb.Api.V1.SearchResultView
 
   def index(
         %{
@@ -27,8 +28,30 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
     end
   end
 
-  def show do
-    # TODO: Getting search result info
+  def show(
+        %{
+          private:
+            %{guardian_default_claims: %{"sub" => user_id} = _guardian_default_claims} = _private
+        } = conn,
+        %{"id" => id} = _params
+      ) do
+    case Scrapers.get_user_search_by_user_id_and_id(user_id, id) do
+      %{search_results: [data]} ->
+        conn
+        |> put_view(SearchResultView)
+        |> render("show.json", %{
+          data: data
+        })
+
+      nil ->
+        conn
+        |> put_view(ErrorView)
+        |> put_status(:not_found)
+        |> render("error.json", %{
+          code: :not_found,
+          message: "Not found"
+        })
+    end
   end
 
   defp build_meta_attrs(payload) do

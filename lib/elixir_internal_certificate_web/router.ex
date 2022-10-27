@@ -111,6 +111,6 @@ defmodule ElixirInternalCertificateWeb.Router do
       :api_auth
     ]
 
-    resources "/keywords", UserSearchController, only: [:index]
+    resources "/keywords", UserSearchController, only: [:index, :show]
   end
 end

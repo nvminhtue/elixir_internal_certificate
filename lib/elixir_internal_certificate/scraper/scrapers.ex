@@ -32,10 +32,17 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
     |> Repo.insert(returning: true)
   end
 
-  def get_user_search_by_user_id_and_id(user_id, id)
-      when is_integer(id) or (is_binary(id) and is_integer(user_id)) do
+  def get_user_search_by_user_id_and_id!(user_id, id)
+      when is_integer(id) or is_binary(id) do
     UserSearch
     |> Repo.get_by!(%{user_id: user_id, id: id})
+    |> preload_search_results()
+  end
+
+  def get_user_search_by_user_id_and_id(user_id, id)
+      when is_integer(id) or is_binary(id) do
+    UserSearch
+    |> Repo.get_by(%{user_id: user_id, id: id})
     |> preload_search_results()
   end
 
@@ -67,4 +74,7 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
 
   defp preload_search_results(%UserSearch{} = user_search),
     do: Repo.preload(user_search, :search_results)
+
+  defp preload_search_results(nil),
+    do: nil
 end
