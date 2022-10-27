@@ -61,7 +61,14 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
          %{conn: conn} do
       user = insert(:user)
       insert_list(10, :user_search, inserted_at: ~N[2022-10-10 00:00:00], user: user)
-      insert(:user_search, keyword: "keyword 1", status: :success, inserted_at: ~N[2022-10-09 00:00:00], user: user)
+
+      insert(:user_search,
+        keyword: "keyword 1",
+        status: :success,
+        inserted_at: ~N[2022-10-09 00:00:00],
+        user: user
+      )
+
       _another_user_keyword = insert(:user_search)
 
       conn =
