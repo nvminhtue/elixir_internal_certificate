@@ -66,6 +66,54 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
              } = json_response(conn, 200)
     end
 
+    test "when logged in user, given a valid page number and valid keyword,
+      returns list of mapping keywords and 200 status",
+         %{conn: conn} do
+      user = insert(:user)
+      insert_list(10, :user_search, keyword: "keyword", user: user)
+      insert(:user_search, keyword: "keyword 1", status: :success, user: user)
+      _another_user_keyword = insert(:user_search)
+
+      conn =
+        conn
+        |> token_auth_user(user)
+        |> get("/api/v1/keywords/?page=2&q=1")
+
+      assert %{
+               "data" => [
+                 %{
+                   "attributes" => %{
+                     "keyword" => "keyword 1",
+                     "status" => "success"
+                   },
+                   "id" => _,
+                   "relationships" => %{},
+                   "type" => "user_search"
+                 }
+               ],
+               "included" => []
+             } = json_response(conn, 200)
+    end
+
+    test "when logged in user, given a valid page number and NOT FOUND keyword,
+      returns list of mapping keywords and 200 status",
+         %{conn: conn} do
+      user = insert(:user)
+      insert_list(10, :user_search, keyword: "keyword", user: user)
+      insert(:user_search, keyword: "keyword 1", status: :success, user: user)
+      _another_user_keyword = insert(:user_search)
+
+      conn =
+        conn
+        |> token_auth_user(user)
+        |> get("/api/v1/keywords/?page=2&q=not_found")
+
+      assert %{
+               "data" => [],
+               "included" => []
+             } = json_response(conn, 200)
+    end
+
     test "when logged in user, given an INVALID page number, returns error and 422 status",
          %{conn: conn} do
       user = insert(:user)
