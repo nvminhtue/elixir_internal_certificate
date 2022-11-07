@@ -3,8 +3,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserRegistrationView do
 
   def fields do
     [
-      :email,
-      :password
+      :email
     ]
   end
 end

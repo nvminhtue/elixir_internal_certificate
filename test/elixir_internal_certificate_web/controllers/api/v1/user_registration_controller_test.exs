@@ -8,8 +8,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserRegistrationControllerTest do
       assert %{
                "data" => %{
                  "attributes" => %{
-                   "email" => _,
-                   "password" => nil
+                   "email" => _
                  },
                  "id" => _,
                  "relationships" => %{},
@@ -28,11 +27,14 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserRegistrationControllerTest do
           password: valid_user_password()
         })
 
-      assert json_response(conn, 400) == %{
+      assert json_response(conn, 422) == %{
                "errors" => [
                  %{
                    "code" => "unprocessable_entity",
-                   "message" => "Invalid email or password"
+                   "detail" => "Email has already been taken",
+                   "source" => %{
+                     "parameter" => "email"
+                   }
                  }
                ]
              }
@@ -45,11 +47,17 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserRegistrationControllerTest do
           password: ""
         })
 
-      assert json_response(conn, 400) == %{
+      assert json_response(conn, 422) == %{
                "errors" => [
                  %{
                    "code" => "unprocessable_entity",
-                   "message" => "Invalid email or password"
+                   "detail" => "Email can't be blank",
+                   "source" => %{"parameter" => "email"}
+                 },
+                 %{
+                   "code" => "unprocessable_entity",
+                   "detail" => "Password can't be blank",
+                   "source" => %{"parameter" => "password"}
                  }
                ]
              }
