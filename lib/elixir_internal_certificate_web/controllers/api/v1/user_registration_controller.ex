@@ -5,7 +5,8 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserRegistrationController do
   alias ElixirInternalCertificate.Account.Schemas.User
 
   def create(conn, params) do
-    with %{changes: validated_params} = _changeset <- Accounts.change_user_registration(%User{}, params),
+    with %{changes: validated_params} = _changeset <-
+           Accounts.change_user_registration(%User{}, params),
          {:ok, user} <- Accounts.register_user(validated_params) do
       render(conn, "show.json", %{data: user})
     else
