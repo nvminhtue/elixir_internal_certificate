@@ -271,7 +271,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
                json_response(conn, 404)
     end
 
-    test "when logged in user, given a existing user_search id belonged to another use, returns 404 status",
+    test "when logged in user, given a existing user_search id belongs to another user, returns 404 status",
          %{conn: conn} do
       user = insert(:user)
       another_user_search = insert(:user_search, status: :success, id: 1)
