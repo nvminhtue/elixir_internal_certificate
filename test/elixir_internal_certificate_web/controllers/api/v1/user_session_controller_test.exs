@@ -42,7 +42,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSessionControllerTest do
                "errors" => [
                  %{
                    "code" => "unauthorized",
-                   "message" => "Invalid email or password"
+                   "detail" => "Invalid email or password"
                  }
                ]
              }
@@ -58,7 +58,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSessionControllerTest do
                "errors" => [
                  %{
                    "code" => "unprocessable_entity",
-                   "message" => "Invalid email or password"
+                   "detail" => "Email or password is missing"
                  }
                ]
              }
@@ -82,7 +82,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSessionControllerTest do
                "errors" => [
                  %{
                    "code" => "internal_server_error",
-                   "message" => "Internal server error"
+                   "detail" => "Internal server error"
                  }
                ]
              }

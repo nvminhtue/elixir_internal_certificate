@@ -1,8 +1,6 @@
 defmodule ElixirInternalCertificateWeb.Api.V1.UserSessionController do
   use ElixirInternalCertificateWeb, :controller
 
-  import Plug.Conn
-
   alias ElixirInternalCertificate.Account.{Accounts, Guardian}
   alias ElixirInternalCertificate.Account.Schemas.User
   alias ElixirInternalCertificateWeb.Api.ErrorView
@@ -18,13 +16,13 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSessionController do
         conn
         |> put_view(ErrorView)
         |> put_status(:unauthorized)
-        |> render("error.json", %{code: :unauthorized, message: "Invalid email or password"})
+        |> render("error.json", %{code: :unauthorized, detail: "Invalid email or password"})
 
       _error ->
         conn
         |> put_view(ErrorView)
         |> put_status(:internal_server_error)
-        |> render("error.json", %{code: :internal_server_error, message: "Internal server error"})
+        |> render("error.json", %{code: :internal_server_error, detail: "Internal server error"})
     end
   end
 
@@ -32,6 +30,6 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSessionController do
     conn
     |> put_status(:unprocessable_entity)
     |> put_view(ErrorView)
-    |> render("error.json", %{code: :unprocessable_entity, message: "Invalid email or password"})
+    |> render("error.json", %{code: :unprocessable_entity, detail: "Email or password is missing"})
   end
 end

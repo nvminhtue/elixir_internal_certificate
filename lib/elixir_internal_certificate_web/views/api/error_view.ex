@@ -6,6 +6,9 @@ defmodule ElixirInternalCertificateWeb.Api.ErrorView do
   def render("error.json", %{code: code, changeset: %Changeset{} = changeset}),
     do: build_error_response(code, changeset)
 
+  def render("error.json", %{code: code, detail: detail}),
+    do: build_error_response(code: code, detail: detail)
+
   defp to_sentence([message]), do: message
 
   defp build_error_response(code, %Changeset{} = changeset) do
@@ -38,6 +41,17 @@ defmodule ElixirInternalCertificateWeb.Api.ErrorView do
       code: code,
       source: %{parameter: field},
       detail: "#{Phoenix.Naming.humanize(field)} #{to_sentence(message)}"
+    }
+  end
+
+  defp build_error_response(code: code, detail: detail) do
+    %{
+      errors: [
+        %{
+          code: code,
+          detail: detail
+        }
+      ]
     }
   end
 
