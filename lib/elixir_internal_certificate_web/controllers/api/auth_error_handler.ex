@@ -10,7 +10,7 @@ defmodule ElixirInternalCertificateWeb.Api.AuthErrorHandler do
     |> put_view(ErrorView)
     |> render("error.json", %{
       code: "unauthorized",
-      message: to_string(type)
+      detail: to_string(type)
     })
   end
 end

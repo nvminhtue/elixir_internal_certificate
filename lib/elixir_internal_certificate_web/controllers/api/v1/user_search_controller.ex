@@ -23,7 +23,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
         conn
         |> put_view(ErrorView)
         |> put_status(:unprocessable_entity)
-        |> render("error.json", %{code: :unprocessable_entity, message: "Page param error"})
+        |> render("error.json", %{code: :unprocessable_entity, detail: "Page param error"})
     end
   end
 

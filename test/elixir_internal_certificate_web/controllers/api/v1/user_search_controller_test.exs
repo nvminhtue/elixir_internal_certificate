@@ -34,7 +34,13 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
                    "type" => "user_search"
                  }
                ],
-               "included" => []
+               "included" => [],
+               "meta" => %{
+                 "page" => 1,
+                 "page_size" => 10,
+                 "total_entries" => 2,
+                 "total_pages" => 1
+               }
              } = json_response(conn, 200)
     end
 
@@ -62,7 +68,13 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
                    "type" => "user_search"
                  }
                ],
-               "included" => []
+               "included" => [],
+               "meta" => %{
+                 "page" => 2,
+                 "page_size" => 10,
+                 "total_entries" => 11,
+                 "total_pages" => 2
+               }
              } = json_response(conn, 200)
     end
 
@@ -91,7 +103,13 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
                    "type" => "user_search"
                  }
                ],
-               "included" => []
+               "included" => [],
+               "meta" => %{
+                 "page" => 1,
+                 "page_size" => 10,
+                 "total_entries" => 1,
+                 "total_pages" => 1
+               }
              } = json_response(conn, 200)
     end
 
@@ -110,7 +128,13 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
 
       assert %{
                "data" => [],
-               "included" => []
+               "included" => [],
+               "meta" => %{
+                 "page" => 1,
+                 "page_size" => 10,
+                 "total_entries" => 0,
+                 "total_pages" => 1
+               }
              } = json_response(conn, 200)
     end
 
@@ -128,7 +152,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
                "errors" => [
                  %{
                    "code" => "unprocessable_entity",
-                   "message" => "Page param error"
+                   "detail" => "Page param error"
                  }
                ]
              } = json_response(conn, 422)
@@ -147,7 +171,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
 
       assert json_response(conn, 401) == %{
                "errors" => [
-                 %{"code" => "unauthorized", "message" => "unauthenticated"}
+                 %{"code" => "unauthorized", "detail" => "unauthenticated"}
                ]
              }
     end
