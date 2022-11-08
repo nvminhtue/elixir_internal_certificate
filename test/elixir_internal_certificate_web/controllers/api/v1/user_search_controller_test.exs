@@ -305,7 +305,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
 
       assert json_response(conn, 401) == %{
                "errors" => [
-                 %{"code" => "unauthorized", "detail" => "unauthenticated"}
+                 %{"code" => "unauthorized", "detail" => "Login required"}
                ]
              }
     end
