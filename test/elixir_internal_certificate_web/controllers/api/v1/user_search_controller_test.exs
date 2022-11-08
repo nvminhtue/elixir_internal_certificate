@@ -267,7 +267,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
         |> token_auth_user(user)
         |> get(Routes.api_user_search_path(conn, :show, 2))
 
-      assert %{"errors" => [%{"code" => "not_found", "message" => "Not found"}]} =
+      assert %{"errors" => [%{"code" => "not_found", "detail" => "Not found"}]} =
                json_response(conn, 404)
     end
 
