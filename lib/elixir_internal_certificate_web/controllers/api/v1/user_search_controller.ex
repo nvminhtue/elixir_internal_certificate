@@ -49,7 +49,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
         |> put_status(:not_found)
         |> render("error.json", %{
           code: :not_found,
-          message: "Not found"
+          detail: "Not found"
         })
     end
   end

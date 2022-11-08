@@ -271,6 +271,21 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
                json_response(conn, 404)
     end
 
+    test "when logged in user, given a existing user_search id belonged to another use, returns 404 status",
+         %{conn: conn} do
+      user = insert(:user)
+      another_user_search = insert(:user_search, status: :success, id: 1)
+      _another_search_result = insert(:search_result, user_search: another_user_search, id: 4)
+
+      conn =
+        conn
+        |> token_auth_user(user)
+        |> get(Routes.api_user_search_path(conn, :show, 1))
+
+      assert %{"errors" => [%{"code" => "not_found", "detail" => "Not found"}]} =
+               json_response(conn, 404)
+    end
+
     test "when unauthenticated user, returns 401 status",
          %{conn: conn} do
       user = insert(:user)
@@ -290,7 +305,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
 
       assert json_response(conn, 401) == %{
                "errors" => [
-                 %{"code" => "unauthorized", "message" => "unauthenticated"}
+                 %{"code" => "unauthorized", "detail" => "unauthenticated"}
                ]
              }
     end
