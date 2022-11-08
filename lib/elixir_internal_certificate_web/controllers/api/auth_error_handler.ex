@@ -4,13 +4,13 @@ defmodule ElixirInternalCertificateWeb.Api.AuthErrorHandler do
 
   alias ElixirInternalCertificateWeb.Api.ErrorView
 
-  def auth_error(conn, {type, _reason}, _opts) do
+  def auth_error(conn, {_type, _reason}, _opts) do
     conn
     |> put_status(:unauthorized)
     |> put_view(ErrorView)
     |> render("error.json", %{
       code: "unauthorized",
-      detail: to_string(type)
+      detail: "Login required"
     })
   end
 end
