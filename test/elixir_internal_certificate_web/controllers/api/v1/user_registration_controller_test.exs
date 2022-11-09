@@ -12,7 +12,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserRegistrationControllerTest do
                  },
                  "id" => _,
                  "relationships" => %{},
-                 "type" => "user_auth"
+                 "type" => "user_registration"
                },
                "included" => []
              } = json_response(conn, 200)

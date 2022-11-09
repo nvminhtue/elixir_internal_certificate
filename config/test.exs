@@ -1,5 +1,7 @@
 import Config
 
+secret_key = "0zON+zcWlayLkHlyowPOXSGt2GjFDXeKS9P7FSkSbbxUMDtBCi5xID7zrgVy/tob"
+
 # Only in tests, remove the complexity from the password hashing algorithm
 config :bcrypt_elixir, :log_rounds, 1
 
@@ -20,7 +22,7 @@ config :elixir_internal_certificate, ElixirInternalCertificate.Repo,
 # you can enable the server option below.
 config :elixir_internal_certificate, ElixirInternalCertificateWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "0zON+zcWlayLkHlyowPOXSGt2GjFDXeKS9P7FSkSbbxUMDtBCi5xID7zrgVy/tob",
+  secret_key_base: secret_key,
   server: true
 
 config :elixir_internal_certificate, :sql_sandbox, true
@@ -46,3 +48,7 @@ config :phoenix, :plug_init_mode, :runtime
 config :exvcr,
   vcr_cassette_library_dir: "test/support/fixtures/vcr_cassettes",
   ignore_localhost: true
+
+# Config Guardian Oauth2
+config :elixir_internal_certificate, ElixirInternalCertificate.Account.Guardian,
+  secret_key: secret_key
