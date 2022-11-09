@@ -30,7 +30,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
         ExMachina.Sequence.next("alphabet_sequence", ["A", "B"])
       ]
 
-      keywords_count = Scrapers.create_user_search(attrs, user)
+      keywords_count = Scrapers.create_user_search(attrs, user.id)
 
       assert keywords_count == 2
     end
@@ -39,7 +39,7 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
       user = insert(:user)
       attrs = []
 
-      keywords_count = Scrapers.create_user_search(attrs, user)
+      keywords_count = Scrapers.create_user_search(attrs, user.id)
 
       assert keywords_count == 0
     end

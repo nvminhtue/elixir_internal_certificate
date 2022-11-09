@@ -4,6 +4,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
   alias ElixirInternalCertificate.Scraper.Scrapers
   alias ElixirInternalCertificateWeb.Api.ErrorView
   alias ElixirInternalCertificateWeb.Api.V1.SearchResultView
+  alias ElixirInternalCertificateWeb.CsvParsingHelper
 
   def index(
         %{
@@ -51,6 +52,33 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
           code: :not_found,
           detail: "Not found"
         })
+    end
+  end
+
+  def upload(
+        %{
+          private:
+            %{guardian_default_claims: %{"sub" => user_id} = _guardian_default_claims} = _private
+        } = conn,
+        %{"file" => file}
+      ) do
+    case CsvParsingHelper.validate_and_parse_keyword_file(file) do
+      {:ok, keywords} ->
+        keywords_count = Scrapers.create_user_search(keywords, user_id)
+
+        conn
+        |> put_flash(:info, "File successfully uploaded. #{keywords_count} keywords uploaded.")
+        |> redirect(to: Routes.user_search_path(conn, :index))
+
+      {:error, :invalid_extension} ->
+        conn
+        |> put_flash(:error, "File extension invalid, csv only")
+        |> redirect(to: Routes.user_search_path(conn, :index))
+
+      {:error, :invalid_length} ->
+        conn
+        |> put_flash(:error, "Length invalid. 1-1000 keywords within 255 characters only")
+        |> redirect(to: Routes.user_search_path(conn, :index))
     end
   end
 
