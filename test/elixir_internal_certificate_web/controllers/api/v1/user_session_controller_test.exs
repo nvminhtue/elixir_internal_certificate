@@ -48,7 +48,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSessionControllerTest do
              }
     end
 
-    test "given not correct input attributes, returns error response", %{conn: conn} do
+    test "given invalid request params, returns error response", %{conn: conn} do
       conn =
         post(conn, Routes.api_user_session_path(conn, :create), %{
           not_valid: "not_valid"
