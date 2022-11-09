@@ -24,6 +24,8 @@ defmodule ElixirInternalCertificateWeb do
       import Plug.Conn
       import ElixirInternalCertificateWeb.Gettext
       alias ElixirInternalCertificateWeb.Router.Helpers, as: Routes
+
+      action_fallback ElixirInternalCertificateWeb.Api.FallbackController
     end
   end
 

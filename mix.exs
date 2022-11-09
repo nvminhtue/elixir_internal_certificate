@@ -54,6 +54,7 @@ defmodule ElixirInternalCertificate.MixProject do
       {:floki, ">= 0.30.0", only: :test},
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
+      {:jsonapi, "~> 1.3.0"},
       {:mimic, "~> 1.7.2", [only: :test]},
       {:nimble_csv, "1.2.0"},
       {:nimble_template, "~> 4.2", only: :dev, runtime: false},
