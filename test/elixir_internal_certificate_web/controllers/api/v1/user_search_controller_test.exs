@@ -312,7 +312,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
   end
 
   describe "POST upload/2" do
-    test "when uploading valid file with logged in user, returns home page", %{conn: conn} do
+    test "when uploading valid file with logged in user, returns status 200", %{conn: conn} do
       user = insert(:user)
       file = upload_dummy_file("valid.csv")
 
@@ -360,7 +360,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
              } = json_response(conn, 200)
     end
 
-    test "when uploading empty file with logged in user, returns an error of invalid length", %{
+    test "when uploading empty file with logged in user, returns status 422", %{
       conn: conn
     } do
       user = insert(:user)
@@ -383,7 +383,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
              } = json_response(conn, 422)
     end
 
-    test "when uploading exceed 255 characters file with logged in user, returns an error of invalid length",
+    test "when uploading exceed 255 characters file with logged in user, returns status 422",
          %{conn: conn} do
       user = insert(:user)
       file = upload_dummy_file("exceed_char.csv")
@@ -405,7 +405,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
              } = json_response(conn, 422)
     end
 
-    test "when uploading exceed 1000 keywords file with logged in user, returns an error of invalid length",
+    test "when uploading exceed 1000 keywords file with logged in user, returns status 422",
          %{conn: conn} do
       user = insert(:user)
       file = upload_dummy_file("exceed_keyword.csv")
@@ -427,7 +427,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
              } = json_response(conn, 422)
     end
 
-    test "when uploading invalid extension file with logged in user, returns an error of invalid extension",
+    test "when uploading invalid extension file with logged in user, returns status 422",
          %{conn: conn} do
       user = insert(:user)
       file = upload_dummy_file("invalid_extension.csve")
@@ -449,7 +449,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
              } = json_response(conn, 422)
     end
 
-    test "when uploading valid file but not log in, returns an error", %{conn: conn} do
+    test "when uploading valid file but not log in, returns status 401", %{conn: conn} do
       file = upload_dummy_file("valid.csv")
 
       conn =

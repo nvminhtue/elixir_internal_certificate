@@ -8,9 +8,9 @@
         <img src={Routes.static_path(@conn, "/images/logo_nimble.png")} height="25" alt="Nimble Logo" loading="lazy" />
       </a>
       <div class="context-zone d-flex">
-        <%= render "_search_keyword.html", assigns %>
         <ul class="navbar-nav mb-2 mb-lg-0">
           <%= if @current_user do %>
+            <%= render "_search_keyword.html", assigns %>
             <li class="nav-item">
               <button class="btn disabled">
                 Hello,
