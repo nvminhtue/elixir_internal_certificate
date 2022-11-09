@@ -18,6 +18,10 @@ defmodule ElixirInternalCertificateWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :api_auth do
+    plug ElixirInternalCertificateWeb.Api.AuthPipeline
+  end
+
   # coveralls-ignore-stop
 
   forward Application.get_env(:elixir_internal_certificate, ElixirInternalCertificateWeb.Endpoint)[
@@ -98,5 +102,15 @@ defmodule ElixirInternalCertificateWeb.Router do
     post "/register", UserRegistrationController, :create
 
     post "/log_in", UserSessionController, :create
+  end
+
+  # Authentication required API
+  scope "/api/v1", ElixirInternalCertificateWeb.Api.V1, as: :api do
+    pipe_through [
+      :api,
+      :api_auth
+    ]
+
+    resources "/keywords", UserSearchController, only: [:index]
   end
 end
