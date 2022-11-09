@@ -3,7 +3,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
 
   alias ElixirInternalCertificate.Scraper.Scrapers
   alias ElixirInternalCertificateWeb.Api.ErrorView
-  alias ElixirInternalCertificateWeb.Api.V1.SearchResultView
+  alias ElixirInternalCertificateWeb.Api.V1.{KeywordUploadView, SearchResultView}
   alias ElixirInternalCertificateWeb.CsvParsingHelper
 
   def index(
@@ -58,27 +58,37 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
   def upload(
         %{
           private:
-            %{guardian_default_claims: %{"sub" => user_id} = _guardian_default_claims} = _private
+            %{guardian_default_claims: %{"sub" => sub_user_id} = _guardian_default_claims} =
+              _private
         } = conn,
         %{"file" => file}
       ) do
-    case CsvParsingHelper.validate_and_parse_keyword_file(file) do
-      {:ok, keywords} ->
-        keywords_count = Scrapers.create_user_search(keywords, user_id)
-
-        conn
-        |> put_flash(:info, "File successfully uploaded. #{keywords_count} keywords uploaded.")
-        |> redirect(to: Routes.user_search_path(conn, :index))
-
+    with {:ok, keywords} <- CsvParsingHelper.validate_and_parse_keyword_file(file),
+         {user_id, _} <- Integer.parse(sub_user_id, 10),
+         {_keywords_count, uploaded_keywords} <- Scrapers.create_user_search(keywords, user_id) do
+      conn
+      |> put_view(KeywordUploadView)
+      |> render("show.json", %{
+        data: uploaded_keywords
+      })
+    else
       {:error, :invalid_extension} ->
         conn
-        |> put_flash(:error, "File extension invalid, csv only")
-        |> redirect(to: Routes.user_search_path(conn, :index))
+        |> put_view(ErrorView)
+        |> put_status(:unprocessable_entity)
+        |> render("error.json", %{
+          code: :unprocessable_entity,
+          detail: "File extension invalid, csv only"
+        })
 
       {:error, :invalid_length} ->
         conn
-        |> put_flash(:error, "Length invalid. 1-1000 keywords within 255 characters only")
-        |> redirect(to: Routes.user_search_path(conn, :index))
+        |> put_view(ErrorView)
+        |> put_status(:unprocessable_entity)
+        |> render("error.json", %{
+          code: :unprocessable_entity,
+          detail: "Length invalid. 1-1000 keywords within 255 characters only"
+        })
     end
   end
 

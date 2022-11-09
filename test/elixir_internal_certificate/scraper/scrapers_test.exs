@@ -30,18 +30,22 @@ defmodule ElixirInternalCertificate.Scraper.ScrapersTest do
         ExMachina.Sequence.next("alphabet_sequence", ["A", "B"])
       ]
 
-      keywords_count = Scrapers.create_user_search(attrs, user.id)
+      {keywords_count, uploaded_keywords} = Scrapers.create_user_search(attrs, user.id)
 
       assert keywords_count == 2
+      assert Enum.count(uploaded_keywords) == 2
+      assert Enum.at(uploaded_keywords, 0).keyword == "A"
+      assert Enum.at(uploaded_keywords, 1).keyword == "B"
     end
 
     test "with no keyword imported, it should return value of 0" do
       user = insert(:user)
       attrs = []
 
-      keywords_count = Scrapers.create_user_search(attrs, user.id)
+      {keywords_count, uploaded_keywords} = Scrapers.create_user_search(attrs, user.id)
 
       assert keywords_count == 0
+      assert Enum.empty?(uploaded_keywords) == true
     end
   end
 

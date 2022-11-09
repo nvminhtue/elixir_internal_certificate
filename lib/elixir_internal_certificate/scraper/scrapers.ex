@@ -17,7 +17,7 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
 
     JobQueueHelper.enqueue_user_search_worker(uploaded_keywords)
 
-    keyword_count
+    {keyword_count, uploaded_keywords}
   end
 
   def update_user_search_status(user_search, status) do
