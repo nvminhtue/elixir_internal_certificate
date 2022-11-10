@@ -113,6 +113,6 @@ defmodule ElixirInternalCertificateWeb.Router do
 
     resources "/keywords", UserSearchController, only: [:index, :show]
 
-    post "/upload", UserSearchController, :upload
+    post "/upload", UserSearchController, :create
   end
 end

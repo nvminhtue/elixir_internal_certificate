@@ -3,7 +3,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
 
   alias ElixirInternalCertificate.Scraper.Scrapers
   alias ElixirInternalCertificateWeb.Api.ErrorView
-  alias ElixirInternalCertificateWeb.Api.V1.{KeywordUploadView, SearchResultView}
+  alias ElixirInternalCertificateWeb.Api.V1.SearchResultView
   alias ElixirInternalCertificateWeb.CsvParsingHelper
 
   def index(
@@ -55,7 +55,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
     end
   end
 
-  def upload(
+  def create(
         %{
           private:
             %{guardian_default_claims: %{"sub" => sub_user_id} = _guardian_default_claims} =
@@ -65,12 +65,8 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
       ) do
     with {:ok, keywords} <- CsvParsingHelper.validate_and_parse_keyword_file(file),
          {user_id, _} <- Integer.parse(sub_user_id, 10),
-         {_keywords_count, uploaded_keywords} <- Scrapers.create_user_search(keywords, user_id) do
-      conn
-      |> put_view(KeywordUploadView)
-      |> render("show.json", %{
-        data: uploaded_keywords
-      })
+         {_keywords_count, _uploaded_keywords} <- Scrapers.create_user_search(keywords, user_id) do
+      send_resp(conn, :ok, "")
     else
       {:error, :invalid_extension} ->
         conn

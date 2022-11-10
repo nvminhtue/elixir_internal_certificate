@@ -319,45 +319,11 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
       conn =
         conn
         |> token_auth_user(user)
-        |> post(Routes.api_user_search_path(conn, :upload), %{
+        |> post(Routes.api_user_search_path(conn, :create), %{
           "file" => file
         })
 
-      assert %{
-               "data" => [
-                 %{
-                   "attributes" => %{"keyword" => "this"},
-                   "id" => _id1,
-                   "relationships" => %{},
-                   "type" => "keyword_upload"
-                 },
-                 %{
-                   "attributes" => %{"keyword" => " is"},
-                   "id" => _id2,
-                   "relationships" => %{},
-                   "type" => "keyword_upload"
-                 },
-                 %{
-                   "attributes" => %{"keyword" => " the"},
-                   "id" => _id3,
-                   "relationships" => %{},
-                   "type" => "keyword_upload"
-                 },
-                 %{
-                   "attributes" => %{"keyword" => " test"},
-                   "id" => _id4,
-                   "relationships" => %{},
-                   "type" => "keyword_upload"
-                 },
-                 %{
-                   "attributes" => %{"keyword" => " file"},
-                   "id" => _id5,
-                   "relationships" => %{},
-                   "type" => "keyword_upload"
-                 }
-               ],
-               "included" => []
-             } = json_response(conn, 200)
+      assert response(conn, 200) == ""
     end
 
     test "when uploading empty file with logged in user, returns status 422", %{
@@ -369,7 +335,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
       conn =
         conn
         |> token_auth_user(user)
-        |> post(Routes.api_user_search_path(conn, :upload), %{
+        |> post(Routes.api_user_search_path(conn, :create), %{
           "file" => file
         })
 
@@ -391,7 +357,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
       conn =
         conn
         |> token_auth_user(user)
-        |> post(Routes.api_user_search_path(conn, :upload), %{
+        |> post(Routes.api_user_search_path(conn, :create), %{
           "file" => file
         })
 
@@ -413,7 +379,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
       conn =
         conn
         |> token_auth_user(user)
-        |> post(Routes.api_user_search_path(conn, :upload), %{
+        |> post(Routes.api_user_search_path(conn, :create), %{
           "file" => file
         })
 
@@ -435,7 +401,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
       conn =
         conn
         |> token_auth_user(user)
-        |> post(Routes.api_user_search_path(conn, :upload), %{
+        |> post(Routes.api_user_search_path(conn, :create), %{
           "file" => file
         })
 
@@ -449,13 +415,13 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
              } = json_response(conn, 422)
     end
 
-    test "when uploading valid file but not log in, returns status 401", %{conn: conn} do
+    test "given an unauthenticated user, returns 401 status", %{conn: conn} do
       file = upload_dummy_file("valid.csv")
 
       conn =
         conn
         |> put_resp_content_type("application/json")
-        |> post(Routes.api_user_search_path(conn, :upload), %{
+        |> post(Routes.api_user_search_path(conn, :create), %{
           "file" => file
         })
 
