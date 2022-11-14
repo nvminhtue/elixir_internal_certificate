@@ -9,15 +9,15 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
   def insert_search_keywords(attrs),
     do: Repo.insert_all(UserSearch, attrs, returning: true)
 
-  def create_user_search(keywords, user) do
+  def create_user_search(keywords, user_id) do
     {keyword_count, uploaded_keywords} =
       keywords
-      |> parse_keywords(user)
+      |> parse_keywords(user_id)
       |> insert_search_keywords()
 
     JobQueueHelper.enqueue_user_search_worker(uploaded_keywords)
 
-    keyword_count
+    {keyword_count, uploaded_keywords}
   end
 
   def update_user_search_status(user_search, status) do
@@ -58,8 +58,8 @@ defmodule ElixirInternalCertificate.Scraper.Scrapers do
     |> Repo.paginate(page: page)
   end
 
-  defp parse_keywords(keywords, user),
-    do: Enum.map(keywords, &structure_user_search(&1, user.id))
+  defp parse_keywords(keywords, user_id),
+    do: Enum.map(keywords, &structure_user_search(&1, user_id))
 
   defp structure_user_search(keyword, user_id) do
     current_time = NaiveDateTime.truncate(NaiveDateTime.utc_now(), :second)

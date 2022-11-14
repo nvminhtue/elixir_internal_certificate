@@ -83,7 +83,7 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
       assert get_session(conn, :user_token) == nil
       assert conn.cookies[@remember_me_cookie] == nil
       assert %{max_age: 0} = conn.resp_cookies[@remember_me_cookie]
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/users/log_in"
       assert Accounts.get_user_by_session_token(user_token) == nil
     end
 
@@ -92,7 +92,7 @@ defmodule ElixirInternalCertificateWeb.UserAuthTest do
 
       assert get_session(conn, :user_token) == nil
       assert %{max_age: 0} = conn.resp_cookies[@remember_me_cookie]
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == "/users/log_in"
     end
   end
 

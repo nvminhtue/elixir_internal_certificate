@@ -4,6 +4,7 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
   alias ElixirInternalCertificate.Scraper.Scrapers
   alias ElixirInternalCertificateWeb.Api.ErrorView
   alias ElixirInternalCertificateWeb.Api.V1.SearchResultView
+  alias ElixirInternalCertificateWeb.CsvParsingHelper
 
   def index(
         %{
@@ -50,6 +51,39 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchController do
         |> render("error.json", %{
           code: :not_found,
           detail: "Not found"
+        })
+    end
+  end
+
+  def create(
+        %{
+          private:
+            %{guardian_default_claims: %{"sub" => sub_user_id} = _guardian_default_claims} =
+              _private
+        } = conn,
+        %{"file" => file}
+      ) do
+    with {:ok, keywords} <- CsvParsingHelper.validate_and_parse_keyword_file(file),
+         {user_id, _} <- Integer.parse(sub_user_id, 10),
+         {_keywords_count, _uploaded_keywords} <- Scrapers.create_user_search(keywords, user_id) do
+      send_resp(conn, :ok, "")
+    else
+      {:error, :invalid_extension} ->
+        conn
+        |> put_view(ErrorView)
+        |> put_status(:unprocessable_entity)
+        |> render("error.json", %{
+          code: :unprocessable_entity,
+          detail: "File extension invalid, csv only"
+        })
+
+      {:error, :invalid_length} ->
+        conn
+        |> put_view(ErrorView)
+        |> put_status(:unprocessable_entity)
+        |> render("error.json", %{
+          code: :unprocessable_entity,
+          detail: "Length invalid. 1-1000 keywords within 255 characters only"
         })
     end
   end

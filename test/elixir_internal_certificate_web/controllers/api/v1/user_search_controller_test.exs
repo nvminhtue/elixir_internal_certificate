@@ -310,4 +310,126 @@ defmodule ElixirInternalCertificateWeb.Api.V1.UserSearchControllerTest do
              }
     end
   end
+
+  describe "POST upload/2" do
+    test "when uploading valid file with logged in user, returns status 200", %{conn: conn} do
+      user = insert(:user)
+      file = upload_dummy_file("valid.csv")
+
+      conn =
+        conn
+        |> token_auth_user(user)
+        |> post(Routes.api_user_search_path(conn, :create), %{
+          "file" => file
+        })
+
+      assert response(conn, 200) == ""
+    end
+
+    test "when uploading empty file with logged in user, returns status 422", %{
+      conn: conn
+    } do
+      user = insert(:user)
+      file = upload_dummy_file("empty.csv")
+
+      conn =
+        conn
+        |> token_auth_user(user)
+        |> post(Routes.api_user_search_path(conn, :create), %{
+          "file" => file
+        })
+
+      assert %{
+               "errors" => [
+                 %{
+                   "code" => "unprocessable_entity",
+                   "detail" => "Length invalid. 1-1000 keywords within 255 characters only"
+                 }
+               ]
+             } = json_response(conn, 422)
+    end
+
+    test "when uploading exceed 255 characters file with logged in user, returns status 422",
+         %{conn: conn} do
+      user = insert(:user)
+      file = upload_dummy_file("exceed_char.csv")
+
+      conn =
+        conn
+        |> token_auth_user(user)
+        |> post(Routes.api_user_search_path(conn, :create), %{
+          "file" => file
+        })
+
+      assert %{
+               "errors" => [
+                 %{
+                   "code" => "unprocessable_entity",
+                   "detail" => "Length invalid. 1-1000 keywords within 255 characters only"
+                 }
+               ]
+             } = json_response(conn, 422)
+    end
+
+    test "when uploading exceed 1000 keywords file with logged in user, returns status 422",
+         %{conn: conn} do
+      user = insert(:user)
+      file = upload_dummy_file("exceed_keyword.csv")
+
+      conn =
+        conn
+        |> token_auth_user(user)
+        |> post(Routes.api_user_search_path(conn, :create), %{
+          "file" => file
+        })
+
+      assert %{
+               "errors" => [
+                 %{
+                   "code" => "unprocessable_entity",
+                   "detail" => "Length invalid. 1-1000 keywords within 255 characters only"
+                 }
+               ]
+             } = json_response(conn, 422)
+    end
+
+    test "when uploading invalid extension file with logged in user, returns status 422",
+         %{conn: conn} do
+      user = insert(:user)
+      file = upload_dummy_file("invalid_extension.csve")
+
+      conn =
+        conn
+        |> token_auth_user(user)
+        |> post(Routes.api_user_search_path(conn, :create), %{
+          "file" => file
+        })
+
+      assert %{
+               "errors" => [
+                 %{
+                   "code" => "unprocessable_entity",
+                   "detail" => "File extension invalid, csv only"
+                 }
+               ]
+             } = json_response(conn, 422)
+    end
+
+    test "given an unauthenticated user, returns 401 status", %{conn: conn} do
+      file = upload_dummy_file("valid.csv")
+
+      conn =
+        conn
+        |> put_resp_content_type("application/json")
+        |> post(Routes.api_user_search_path(conn, :create), %{
+          "file" => file
+        })
+
+      assert json_response(conn, 401) == %{
+               "errors" => [
+                 %{"code" => "unauthorized", "detail" => "Login required"}
+               ]
+             }
+    end
+  end
 end
