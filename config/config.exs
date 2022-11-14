@@ -35,6 +35,10 @@ config :elixir_internal_certificate, ElixirInternalCertificate.Mailer,
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, false
 
+# Config Guardian Oauth2
+config :elixir_internal_certificate, ElixirInternalCertificate.Account.Guardian,
+  issuer: "elixir_internal_certificate"
+
 # Configure dart_sass (the version is required)
 config :dart_sass,
   version: "1.49.11",
@@ -69,6 +73,8 @@ config :elixir_internal_certificate, Oban,
   repo: ElixirInternalCertificate.Repo,
   plugins: [Oban.Plugins.Pruner],
   queues: [default: 10, user_search: 10]
+
+config :jsonapi, remove_links: true
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

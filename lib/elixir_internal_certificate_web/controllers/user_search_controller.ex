@@ -19,7 +19,7 @@ defmodule ElixirInternalCertificateWeb.UserSearchController do
   end
 
   def show(%{assigns: %{current_user: %{id: user_id}}} = conn, %{"id" => id}) do
-    %{search_results: [data]} = Scrapers.get_user_search_by_user_id_and_id(user_id, id)
+    %{search_results: [data]} = Scrapers.get_user_search_by_user_id_and_id!(user_id, id)
 
     render(conn, "show.html", data: data)
   end
@@ -30,7 +30,8 @@ defmodule ElixirInternalCertificateWeb.UserSearchController do
   def upload(conn, %{"file" => file}) do
     case CsvParsingHelper.validate_and_parse_keyword_file(file) do
       {:ok, keywords} ->
-        keywords_count = Scrapers.create_user_search(keywords, conn.assigns.current_user)
+        {keywords_count, _uploaded_keywords} =
+          Scrapers.create_user_search(keywords, conn.assigns.current_user.id)
 
         conn
         |> put_flash(:info, "File successfully uploaded. #{keywords_count} keywords uploaded.")
